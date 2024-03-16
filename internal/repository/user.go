@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserRepoInterface interface {
+type UserInterface interface {
 	Create(req domain.UserRegister) (*domain.User, error)
 	Find(req domain.UserLogin) (*domain.User, error)
 	Update(id uint, req domain.User) error
@@ -18,7 +18,7 @@ type user struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) UserRepoInterface {
+func NewUser(db *gorm.DB) UserInterface {
 	return &user{
 		db: db,
 	}

@@ -12,7 +12,13 @@ func (e Error) Error() string {
 
 func EmailUsed() Error {
 	return Error{
-		Message: "email has been userd",
+		Message: "email has been used",
+	}
+}
+
+func DataHasBeenUsed() Error {
+	return Error{
+		Message: "data by this name has been used",
 	}
 }
 
