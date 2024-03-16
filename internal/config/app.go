@@ -19,6 +19,7 @@ type App struct {
 		Host string
 		Pass string
 		User string
+		Name string
 	}
 
 	App struct {
@@ -79,6 +80,7 @@ func initConfig() *App {
 	conf.MongoDB.Host = os.Getenv("MONGODB_HOST")
 	conf.MongoDB.Pass = os.Getenv("MONGODB_PASS")
 	conf.MongoDB.User = os.Getenv("MONGODB_USER")
+	conf.MongoDB.User = os.Getenv("MONGODB_NAME")
 
 	conf.App.Secret = os.Getenv("APP_SECRET")
 	conf.App.Port = os.Getenv("APP_PORT")
