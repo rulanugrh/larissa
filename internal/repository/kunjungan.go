@@ -21,7 +21,7 @@ func NewKunjungan(db *gorm.DB) KunjunganInterface {
 	}
 }
 
-func(k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {
+func(k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {	
 	err := k.db.Create(&req).Error
 	if err != nil {
 		return nil, util.Errors(err)
