@@ -59,6 +59,7 @@ func main() {
 	conf := config.GetConfig()
 	postgres := config.InitializePostgres(conf)
 	postgres.NewConnection()
+	postgres.Migration()
 
 	mongo := config.InitializeMongo(conf)
 

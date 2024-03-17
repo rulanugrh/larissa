@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -36,5 +37,5 @@ func (p *Postgres) NewConnection()  {
 }
 
 func (p *Postgres) Migration() {
-	// pass
+	p.DB.AutoMigrate(&domain.Role{}, &domain.User{}, &domain.Obat{}, &domain.Penyakit{}, &domain.Kunjungan{})
 }
