@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"github.com/rulanugrh/larissa/internal/config"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/util"
-	"gorm.io/gorm"
 )
 
 type KunjunganInterface interface {
@@ -12,17 +12,17 @@ type KunjunganInterface interface {
 }
 
 type kunjungan struct {
-	db *gorm.DB
+	client *config.Postgres
 }
 
-func NewKunjungan(db *gorm.DB) KunjunganInterface {
+func NewKunjungan(client *config.Postgres) KunjunganInterface {
 	return &kunjungan{
-		db: db,
+		client: client,
 	}
 }
 
-func(k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {	
-	err := k.db.Create(&req).Error
+func(k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {
+	err := k.client.DB.Create(&req).Error
 	if err != nil {
 		return nil, util.Errors(err)
 	}
@@ -32,7 +32,7 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {
 
 func(k *kunjungan) List(id uint) (*[]domain.Kunjungan, error) {
 	var model []domain.Kunjungan
-	find := k.db.Where("id = ?").Find(&model)
+	find := k.client.DB.Where("id = ?").Find(&model)
 	if find.RowsAffected == 0 {
 		return nil, util.NotFound()
 	}

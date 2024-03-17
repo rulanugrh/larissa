@@ -11,7 +11,7 @@ import (
 )
 
 type MongoDB struct {
-	conn *mongo.Client
+	Conn *mongo.Client
 	conf *App
 }
 
@@ -30,12 +30,12 @@ func (m *MongoDB) NewMongo() {
 	client := options.Client().ApplyURI(dsn).SetServerAPIOptions(serverApi)
 	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
 	defer cancel()
-	
+
 	cli, err := mongo.Connect(ctx, client)
 	if err != nil {
 		log.Println("Error, can't connect mongodb")
 	}
 
 	log.Println("Success connect to MongoDB")
-	m.conn = cli
+	m.Conn = cli
 }

@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"github.com/rulanugrh/larissa/internal/config"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/util"
-	"gorm.io/gorm"
 )
 
 type ObatInterface interface {
@@ -15,17 +15,17 @@ type ObatInterface interface {
 }
 
 type obat struct {
-	db *gorm.DB
+	client *config.Postgres
 }
 
-func NewObat(db *gorm.DB) ObatInterface {
+func NewObat(client *config.Postgres) ObatInterface {
 	return &obat{
-		db: db,
+		client: client,
 	}
 }
 
 func(o *obat) Create(req domain.Obat) (*domain.Obat, error) {
-	find := o.db.Where("name = ?", req.Name).Find(&req)
+	find := o.client.DB.Where("name = ?", req.Name).Find(&req)
 	if find.RowsAffected != 0 {
 		return nil, util.DataHasBeenUsed()
 	}
@@ -40,7 +40,7 @@ func(o *obat) Create(req domain.Obat) (*domain.Obat, error) {
 
 func(o *obat) FindID(id uint) (*domain.Obat, error) {
 	var model domain.Obat
-	err := o.db.Where("id = ?", id).Find(&model).Error
+	err := o.client.DB.Where("id = ?", id).Find(&model).Error
 
 	if err != nil {
 		return nil, util.Errors(err)
@@ -52,7 +52,7 @@ func(o *obat) FindID(id uint) (*domain.Obat, error) {
 func(o *obat) FindAll() (*[]domain.Obat, error) {
 	var finds []domain.Obat
 
-	err := o.db.Find(&finds).Error
+	err := o.client.DB.Find(&finds).Error
 	if err != nil {
 		return nil, util.Errors(err)
 	}
@@ -62,7 +62,7 @@ func(o *obat) FindAll() (*[]domain.Obat, error) {
 
 func(o *obat) Update(id uint, req domain.Obat) (*domain.Obat, error) {
 	var model domain.Obat
-	find := o.db.Where("id = ?", id).Find(&model)
+	find := o.client.DB.Where("id = ?", id).Find(&model)
 	if find.RowsAffected == 0 {
 		return nil, util.NotFound()
 	}
@@ -77,7 +77,7 @@ func(o *obat) Update(id uint, req domain.Obat) (*domain.Obat, error) {
 
 func(o *obat) Delete(id uint) error {
 	var model domain.Obat
-	find := o.db.Where("id  = ?", id).Find(&model)
+	find := o.client.DB.Where("id  = ?", id).Find(&model)
 	if find.RowsAffected == 0 {
 		return util.NotFound()
 	}

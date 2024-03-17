@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"github.com/rulanugrh/larissa/internal/config"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/util"
-	"gorm.io/gorm"
 )
 
 type UserInterface interface {
@@ -15,12 +15,12 @@ type UserInterface interface {
 }
 
 type user struct {
-	db *gorm.DB
+	client *config.Postgres
 }
 
-func NewUser(db *gorm.DB) UserInterface {
+func NewUser(client *config.Postgres) UserInterface {
 	return &user{
-		db: db,
+		client: client,
 	}
 }
 func (u *user) Create(req domain.UserRegister) (*domain.User, error) {
@@ -35,7 +35,7 @@ func (u *user) Create(req domain.UserRegister) (*domain.User, error) {
 		RoleID:   req.RoleID,
 	}
 
-	err := u.db.Create(&create).Error
+	err := u.client.DB.Create(&create).Error
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (u *user) Create(req domain.UserRegister) (*domain.User, error) {
 
 func (u *user) Find(req domain.UserLogin) (*domain.User, error) {
 	var find domain.User
-	rows := u.db.Where("email = ?", req.Email).Find(&find)
+	rows := u.client.DB.Where("email = ?", req.Email).Find(&find)
 
 	if rows.RowsAffected != 0 {
 		return nil, util.EmailUsed()
@@ -56,7 +56,7 @@ func (u *user) Find(req domain.UserLogin) (*domain.User, error) {
 
 func (u *user) Update(id uint, req domain.User) error {
 	var update domain.User
-	err := u.db.Model(&req).Where("id = ?", id).Updates(&update).Error
+	err := u.client.DB.Model(&req).Where("id = ?", id).Updates(&update).Error
 	if err != nil {
 		return util.NotFound()
 	}
@@ -67,7 +67,7 @@ func (u *user) Update(id uint, req domain.User) error {
 func (u *user) ListAll() (*[]domain.User, error) {
 	var find []domain.User
 
-	finds := u.db.Find(&find)
+	finds := u.client.DB.Find(&find)
 	if finds.RowsAffected == 0 {
 		return nil, util.NotFound()
 	}
@@ -81,7 +81,7 @@ func (u *user) ListAll() (*[]domain.User, error) {
 
 func (u *user) Delete(id uint) error {
 	var model domain.User
-	err := u.db.Where("id = ?", id).Delete(&model).Error
+	err := u.client.DB.Where("id = ?", id).Delete(&model).Error
 	if err != nil {
 		return util.Errors(err)
 	}

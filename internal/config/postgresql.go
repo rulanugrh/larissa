@@ -9,7 +9,7 @@ import (
 )
 
 type Postgres struct {
-	db *gorm.DB
+	DB *gorm.DB
 	conf *App
 }
 
@@ -17,7 +17,7 @@ func InitializePostgres(conf *App) *Postgres {
 	return &Postgres{conf: conf}
 }
 
-func (p *Postgres) NewConnection() {
+func (p *Postgres) NewConnection()  {
 	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=disable&TimeZone=Asia/Jakarta",
 		p.conf.Postges.User,
 		p.conf.Postges.Pass,
@@ -32,7 +32,7 @@ func (p *Postgres) NewConnection() {
 	}
 
 	log.Println("Success connect to PostgreSQL")
-	p.db = db
+	p.DB = db
 }
 
 func (p *Postgres) Migration() {
