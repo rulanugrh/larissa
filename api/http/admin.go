@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -33,17 +32,11 @@ func NewAdmin(service service.AdminInterface) AdminInterface {
 
 func(a *admin) Penyakit(w http.ResponseWriter, r *http.Request) {
 	var req domain.Penyakit
-	body, err := ioutil.ReadAll(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		response := util.WriteJSON(util.InternalServerError("cannot read body request"))
-		w.WriteHeader(500)
+		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
+		w.WriteHeader(400)
 		w.Write(response)
-		return
-	}
-
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		w.WriteHeader(500)
 		return
 	}
 
@@ -63,17 +56,11 @@ func(a *admin) Penyakit(w http.ResponseWriter, r *http.Request) {
 
 func(a *admin) Obat(w http.ResponseWriter, r *http.Request) {
 	var req domain.Obat
-	body, err := ioutil.ReadAll(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		response := util.WriteJSON(util.InternalServerError("cannot read body request"))
-		w.WriteHeader(500)
+		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
+		w.WriteHeader(400)
 		w.Write(response)
-		return
-	}
-
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		w.WriteHeader(500)
 		return
 	}
 
@@ -93,17 +80,11 @@ func(a *admin) Obat(w http.ResponseWriter, r *http.Request) {
 
 func(a *admin) UpdateObat(w http.ResponseWriter, r *http.Request) {
 	var req domain.Obat
-	body, err := ioutil.ReadAll(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		response := util.WriteJSON(util.InternalServerError("cannot read body request"))
-		w.WriteHeader(500)
+		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
+		w.WriteHeader(400)
 		w.Write(response)
-		return
-	}
-
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		w.WriteHeader(500)
 		return
 	}
 

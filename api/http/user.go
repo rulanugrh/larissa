@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/rulanugrh/larissa/internal/entity/domain"
@@ -29,17 +28,11 @@ func NewUser(service service.UserInterface) UserInterface {
 
 func(u *user) Register(w http.ResponseWriter, r *http.Request) {
 	var req domain.UserRegister
-	body, err := ioutil.ReadAll(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
 		w.WriteHeader(400)
 		w.Write(response)
-		return
-	}
-
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		w.WriteHeader(500)
 		return
 	}
 
@@ -59,17 +52,11 @@ func(u *user) Register(w http.ResponseWriter, r *http.Request) {
 
 func(u *user) Login(w http.ResponseWriter, r *http.Request) {
 	var req domain.UserLogin
-	body, err := ioutil.ReadAll(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
 		w.WriteHeader(400)
 		w.Write(response)
-		return
-	}
-
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		w.WriteHeader(500)
 		return
 	}
 
@@ -96,17 +83,11 @@ func(u *user) Login(w http.ResponseWriter, r *http.Request) {
 
 func(u *user) Update(w http.ResponseWriter, r *http.Request) {
 	var req domain.User
-	body, err := ioutil.ReadAll(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
 		w.WriteHeader(400)
 		w.Write(response)
-		return
-	}
-
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		w.WriteHeader(500)
 		return
 	}
 
