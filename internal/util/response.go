@@ -6,6 +6,10 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
+func (r Response) Error() string {
+	return r.Message
+}
+
 func Created(msg string, data interface{}) Response {
 	return Response{
 		Code:    201,
