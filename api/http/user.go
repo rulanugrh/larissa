@@ -108,7 +108,7 @@ func(u *user) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := r.Header.Get("Authorizaation")
+	token := r.Header.Get("Authorization")
 	claims, err := middleware.CheckToken(token)
 	if err != nil {
 		response := util.WriteJSON(util.Unauthorized(err.Error()))
