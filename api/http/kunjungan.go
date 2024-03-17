@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/rulanugrh/larissa/internal/entity/domain"
@@ -28,17 +27,11 @@ func NewKunjungan(service service.KunjunganInterface) KunjunganInterface {
 
 func(k *kunjungan) Create(w http.ResponseWriter, r *http.Request) {
 	var req domain.Kunjungan
-	body, err := ioutil.ReadAll(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		response := util.WriteJSON(util.InternalServerError("cannot read body request"))
+		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
 		w.WriteHeader(500)
 		w.Write(response)
-		return
-	}
-
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		w.WriteHeader(500)
 		return
 	}
 

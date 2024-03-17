@@ -35,7 +35,7 @@ func(a *admin) Penyakit(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
-		w.WriteHeader(400)
+		w.WriteHeader(500)
 		w.Write(response)
 		return
 	}
@@ -59,7 +59,7 @@ func(a *admin) Obat(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
-		w.WriteHeader(400)
+		w.WriteHeader(500)
 		w.Write(response)
 		return
 	}
@@ -83,7 +83,7 @@ func(a *admin) UpdateObat(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		response := util.WriteJSON(util.InternalServerError("cannot read request body"))
-		w.WriteHeader(400)
+		w.WriteHeader(500)
 		w.Write(response)
 		return
 	}
