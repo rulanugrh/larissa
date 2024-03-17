@@ -54,6 +54,7 @@ func(u *user) Register(w http.ResponseWriter, r *http.Request) {
 	response := util.WriteJSON(util.Created("success register account", data))
 	w.WriteHeader(201)
 	w.Write(response)
+	return
 }
 
 func(u *user) Login(w http.ResponseWriter, r *http.Request) {
@@ -90,6 +91,7 @@ func(u *user) Login(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(200)
 	w.Write([]byte("sucess login"))
+	return
 }
 
 func(u *user) Update(w http.ResponseWriter, r *http.Request) {
@@ -127,4 +129,5 @@ func(u *user) Update(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(200)
 	w.Write([]byte("success update user"))
+	return
 }
