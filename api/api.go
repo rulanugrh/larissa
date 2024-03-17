@@ -13,11 +13,11 @@ import (
 )
 
 type API struct {
-	user handler.UserInterface
-	obat handler.ObatInterface
-	admin handler.AdminInterface
+	user      handler.UserInterface
+	obat      handler.ObatInterface
+	admin     handler.AdminInterface
 	kunjungan handler.KunjunganInterface
-	penyakit handler.PenyakitInterface
+	penyakit  handler.PenyakitInterface
 }
 
 func (api *API) UserRoute(r *mux.Router) {
@@ -75,11 +75,11 @@ func main() {
 	adminService := service.NewAdmin(obatRepository, penyakitRepository, reportedRepository)
 
 	api := API{
-		obat: handler.NewObat(obatService),
-		user: handler.NewUser(userService),
+		obat:      handler.NewObat(obatService),
+		user:      handler.NewUser(userService),
 		kunjungan: handler.NewKunjungan(kunjunganServices),
-		penyakit: handler.NewPenyakit(penyakitService),
-		admin: handler.NewAdmin(adminService),
+		penyakit:  handler.NewPenyakit(penyakitService),
+		admin:     handler.NewAdmin(adminService),
 	}
 
 	routes := mux.NewRouter()
@@ -93,7 +93,7 @@ func main() {
 
 	dsn := fmt.Sprintf("%s:%s", conf.App.Host, conf.App.Port)
 	server := http.Server{
-		Addr: dsn,
+		Addr:    dsn,
 		Handler: routes,
 	}
 
