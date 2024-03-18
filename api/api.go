@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	handler "github.com/rulanugrh/larissa/api/http"
 	"github.com/rulanugrh/larissa/internal/config"
+	"github.com/rulanugrh/larissa/internal/middleware"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/service"
 )
@@ -30,24 +31,28 @@ func (api *API) UserRoute(r *mux.Router) {
 
 func (api *API) KunjunganRoute(r *mux.Router) {
 	app := r.PathPrefix("/api/kunjungan/").Subrouter()
+	app.Use(middleware.GeneralVerify)
 	app.HandleFunc("/create", api.kunjungan.Create).Methods("POST")
 	app.HandleFunc("/find", api.kunjungan.Find).Methods("GET")
 }
 
 func (api *API) ObatRoute(r *mux.Router) {
 	app := r.PathPrefix("/api/obat/").Subrouter()
+	app.Use(middleware.GeneralVerify)
 	app.HandleFunc("/get", api.obat.FindAll).Methods("GET")
 	app.HandleFunc("/find/{id}", api.obat.FindID).Methods("GET")
 }
 
 func (api *API) PenyakitRoute(r *mux.Router) {
 	app := r.PathPrefix("/api/penyakit/").Subrouter()
+	app.Use(middleware.GeneralVerify)
 	app.HandleFunc("/get", api.penyakit.FindAll).Methods("GET")
 	app.HandleFunc("/find/{id}", api.penyakit.FindID).Methods("GET")
 }
 
 func (api *API) AdminRoute(r *mux.Router) {
 	app := r.PathPrefix("/api/admin/").Subrouter()
+	app.Use(middleware.AdminVerify)
 	app.HandleFunc("/create/pbat", api.admin.Obat).Methods("POST")
 	app.HandleFunc("/create/penyakit", api.admin.Penyakit).Methods("POST")
 	app.HandleFunc("/update/obat/{id}", api.admin.UpdateObat).Methods("PUT")

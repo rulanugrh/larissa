@@ -70,7 +70,7 @@ func(u *user) Login(req domain.UserLogin) (*string, error) {
 		return nil, util.Errors(err)
 	}
 
-	token, err := middleware.GenerateToken(data.ID, data.RoleID)
+	token, err := middleware.GenerateToken(data.ID, data.RoleID, req.Email)
 	if err != nil {
 		return nil, err
 	}

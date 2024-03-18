@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -11,15 +12,17 @@ import (
 type jwtclaim struct {
 	ID     uint `json:"id"`
 	RoleID uint `json:"role_id"`
+	Email string `json:"email"`
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(id uint, roleid uint) (string, error) {
+func GenerateToken(id uint, roleid uint, email string) (string, error) {
 	conf := config.GetConfig()
 	time := jwt.NewNumericDate(time.Now().Add(15 * time.Minute))
 	claims := &jwtclaim{
 		ID:     id,
 		RoleID: roleid,
+		Email: email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: time,
 		},
@@ -51,4 +54,68 @@ func CheckToken(token string) (*jwtclaim, error) {
 	}
 
 	return claim, nil
+}
+
+func AdminVerify(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		conf := config.GetConfig()
+		token := r.Header.Get("Authorization")
+
+		if token == "" {
+			response := util.WriteJSON(util.Unauthorized("token missing"))
+			w.WriteHeader(401)
+			w.Write(response)
+			return
+		}
+
+		claim, err := CheckToken(token)
+		if err != nil {
+			response := util.WriteJSON(util.Unauthorized(err.Error()))
+			w.WriteHeader(401)
+			w.Write(response)
+			return
+		}
+
+		if claim.Email != conf.Admin.Email {
+			response := util.WriteJSON(util.Forbidden("you are not admin"))
+			w.WriteHeader(403)
+			w.Write(response)
+			return
+		}
+
+		if claim.ExpiresAt.Unix() < time.Now().Unix() {
+			response := util.WriteJSON(util.Forbidden("token expired"))
+			w.WriteHeader(403)
+			w.Write(response)
+			return
+		}
+	})
+}
+
+func GeneralVerify(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := r.Header.Get("Authorization")
+
+		if token == "" {
+			response := util.WriteJSON(util.Unauthorized("token missing"))
+			w.WriteHeader(401)
+			w.Write(response)
+			return
+		}
+
+		claim, err := CheckToken(token)
+		if err != nil {
+			response := util.WriteJSON(util.Unauthorized(err.Error()))
+			w.WriteHeader(401)
+			w.Write(response)
+			return
+		}
+
+		if claim.ExpiresAt.Unix() < time.Now().Unix() {
+			response := util.WriteJSON(util.Forbidden("token expired"))
+			w.WriteHeader(403)
+			w.Write(response)
+			return
+		}
+	})
 }
