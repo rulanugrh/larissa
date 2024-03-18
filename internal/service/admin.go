@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
@@ -124,6 +125,7 @@ func(a *admin) Reported() (*[]web.Reported, error) {
 	}
 
 	a.gauge.Kunjungan.Set(float64(len(*data)))
+	a.gauge.Info.With(prometheus.Labels{"services": "reported"}).Set(1)
 	return &response, nil
 }
 
@@ -149,5 +151,6 @@ func (a *admin) ListAllUser() (*[]web.User, error) {
 	}
 
 	a.gauge.User.Set(float64(len(*data)))
+	a.gauge.Info.With(prometheus.Labels{"services": "user"}).Set(1)
 	return &response, nil
 }

@@ -13,6 +13,7 @@ type Data struct {
 	Obat prometheus.Gauge
 	User prometheus.Gauge
 	Penyakit prometheus.Gauge
+	Info *prometheus.GaugeVec
 }
 
 type Metric struct {
@@ -47,9 +48,15 @@ func (m *Metric) SetGauge() *Data {
 			Name:      "list_all_penyakit",
 			Help:      "Banyaknya user yang telah melihat list daripada penyakit",
 		}),
+		Info: prometheus.NewGaugeVec(prometheus.GaugeOpts{
+			Namespace: "Larissa App",
+			Name: "info",
+			Help: "Information about my app",
+		}, []string{}),
+
 	}
 
-	m.reg.MustRegister(ms.Kunjungan, ms.Obat, ms.Penyakit, ms.User)
+	m.reg.MustRegister(ms.Kunjungan, ms.Obat, ms.Penyakit, ms.User, ms.Info)
 
 	return &ms
 }
