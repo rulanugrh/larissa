@@ -119,3 +119,13 @@ func GeneralVerify(next http.Handler) http.Handler {
 		}
 	})
 }
+
+func GetUserID(r *http.Request) (uint, error) {
+	token := r.Header.Get("Authorization")
+	claim, err := CheckToken(token)
+	if err != nil {
+		return 0, err
+	}
+
+	return claim.ID, nil
+}

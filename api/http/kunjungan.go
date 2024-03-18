@@ -50,8 +50,7 @@ func(k *kunjungan) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func(k *kunjungan) Find(w http.ResponseWriter, r *http.Request) {
-	token := r.Header.Get("Authorization")
-	check, err := middleware.CheckToken(token)
+	id, err := middleware.GetUserID(r)
 	if err != nil {
 		response := util.WriteJSON(util.Unauthorized(err.Error()))
 		w.WriteHeader(401)
@@ -59,7 +58,7 @@ func(k *kunjungan) Find(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := k.service.Find(check.ID)
+	data, err := k.service.Find(id)
 	if err != nil {
 		response := util.WriteJSON(util.BadRequest(err.Error()))
 		w.WriteHeader(400)

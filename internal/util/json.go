@@ -10,7 +10,7 @@ func WriteJSON(data any) []byte {
 	if err != nil {
 		return nil
 	}
-	
+
 	return response
 }
 

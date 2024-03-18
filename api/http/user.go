@@ -91,8 +91,7 @@ func(u *user) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := r.Header.Get("Authorization")
-	claims, err := middleware.CheckToken(token)
+	id, err := middleware.GetUserID(r)
 	if err != nil {
 		response := util.WriteJSON(util.Unauthorized(err.Error()))
 		w.WriteHeader(401)
@@ -100,7 +99,7 @@ func(u *user) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = u.service.Update(claims.ID, req)
+	err = u.service.Update(id, req)
 	if err != nil {
 		response := util.WriteJSON(util.BadRequest(err.Error()))
 		w.WriteHeader(400)
