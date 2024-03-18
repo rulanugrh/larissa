@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/rulanugrh/larissa/internal/util"
 )
 
 type IValidation interface {
@@ -42,4 +43,6 @@ func (v *Validation) Error(err error) error {
 			msg = fmt.Sprintf("%s data must be email format", e.Field())
 		}
 	}
+
+	return util.Validation(msg)
 }
