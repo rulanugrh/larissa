@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	handler "github.com/rulanugrh/larissa/api/http"
@@ -56,11 +57,11 @@ func (api *API) AdminRoute(r *mux.Router) {
 }
 
 func main() {
+	command := os.Args[1]
+
 	conf := config.GetConfig()
 	postgres := config.InitializePostgres(conf)
 	postgres.NewConnection()
-	postgres.Migration()
-
 	mongo := config.InitializeMongo(conf)
 
 	userRepository := repository.NewUser(postgres)
@@ -98,11 +99,25 @@ func main() {
 		Handler: routes,
 	}
 
-	err := server.ListenAndServe()
-	if err != nil {
-		log.Printf("cannot running http service because: %s", err.Error())
-	}
+	if command == "migrate" {
+		postgres.Migration()
 
-	log.Printf("running at: %s", dsn)
+	} else if command == "seed" {
+		err := postgres.Seeder()
+		if err != nil {
+			log.Printf("error seeder to db: %s", err.Error())
+		}
+
+	} else if command == "serve" {
+		err := server.ListenAndServe()
+		if err != nil {
+			log.Printf("cannot running http service because: %s", err.Error())
+		}
+
+		log.Printf("running at: %s", dsn)
+
+	} else {
+		log.Println("error command")
+	}
 
 }

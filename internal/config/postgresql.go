@@ -3,8 +3,10 @@ package config
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/rulanugrh/larissa/internal/entity/domain"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -37,5 +39,54 @@ func (p *Postgres) NewConnection()  {
 }
 
 func (p *Postgres) Migration() {
-	p.DB.AutoMigrate(&domain.Role{}, &domain.User{}, &domain.Obat{}, &domain.Penyakit{}, &domain.Kunjungan{})
+	err := p.DB.AutoMigrate(&domain.Role{}, &domain.User{}, &domain.Obat{}, &domain.Penyakit{}, &domain.Kunjungan{})
+	if err != nil {
+		log.Printf("error migration because :%s", err.Error())
+	}
+
+	log.Println("success migration")
+}
+
+func (p *Postgres) Seeder() error {
+	roles := append([]domain.Role{},
+		domain.Role{
+			Name: "Admin",
+			Descriptions: "this is role admin",
+		},
+		domain.Role{
+			Name: "Doctor",
+			Descriptions: "this is role doctor",
+		},
+		domain.Role{
+			Name: "User",
+			Descriptions: "this is role for user",
+	})
+
+	err := p.DB.Create(&roles).Error
+	if err != nil {
+		return err
+	}
+
+	password, err:= bcrypt.GenerateFromPassword([]byte(p.conf.Admin.Password), 14)
+	if err != nil {
+		return err
+	}
+
+	user := domain.User{
+		FName: "Admini",
+		LName: "-",
+		Email: p.conf.Admin.Email,
+		Password: string(password),
+		Address: "-",
+		Age: 0,
+		RoleID: 1,
+		TTL: time.Now(),
+	}
+
+	err = p.DB.Create(&user).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
