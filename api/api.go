@@ -100,7 +100,7 @@ func main() {
 	}
 
 	routes := mux.NewRouter()
-	promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
+	promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{Registry: reg})
 
 	// add routes
 	routes.Handle("/metric", promHandler).Methods("GET")
