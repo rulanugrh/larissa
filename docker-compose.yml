@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  postgres:
+    container_name: postgres-app
+    hostname: postgres-app
+    image: postgres:alpine
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
+      - POSTGRES_NAME=${POSTGRES_NAME}
+    restart: unless-stopped
+    networks:
+      - connection
+
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - EXPOSE_PORT=${APP_PORT}
+
+    env_file:
+      - .env
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    networks:
+      - connection
+
+
+networks:
+  connection:
+    driver: bridge
