@@ -32,6 +32,17 @@ services:
     networks:
       - connection
 
+  prometheus:
+    image: prom/prometheus:v2.40.4
+    container_name: prome-larissa
+    ports:
+      - 9090:9090
+    volumes:
+      - ./infrastructure/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - connection
+    depends_on:
+      - app
 
 networks:
   connection:
