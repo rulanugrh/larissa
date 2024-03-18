@@ -17,15 +17,22 @@ type UserInterface interface {
 
 type user struct {
 	urepo repository.UserInterface
+	validate middleware.IValidation
 }
 
 func NewUser(urepo repository.UserInterface) UserInterface {
 	return &user{
 		urepo: urepo,
+		validate: middleware.NewValidation(),
 	}
 }
 
 func(u *user) Register(req domain.UserRegister) (*web.User, error) {
+	err := u.validate.Validate(req)
+	if err != nil {
+		return nil, u.validate.Error(err)
+	}
+
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), 14)
 	if err != nil {
 		return nil, util.Errors(err)
@@ -60,6 +67,11 @@ func(u *user) Register(req domain.UserRegister) (*web.User, error) {
 }
 
 func(u *user) Login(req domain.UserLogin) (*string, error) {
+	err := u.validate.Validate(req)
+	if err != nil {
+		return nil, u.validate.Error(err)
+	}
+
 	data, err := u.urepo.Find(req)
 	if err != nil {
 		return nil, util.Errors(err)

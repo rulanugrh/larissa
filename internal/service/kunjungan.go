@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/entity/web"
+	"github.com/rulanugrh/larissa/internal/middleware"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
 )
@@ -15,16 +16,23 @@ type KunjunganInterface interface {
 type kunjungan struct {
 	krepo repository.KunjunganInterface
 	reported repository.ReportedInterface
+	validate middleware.IValidation
 }
 
 func NewKunjungan(krepo repository.KunjunganInterface, reported repository.ReportedInterface) KunjunganInterface {
 	return &kunjungan{
 		krepo: krepo,
 		reported: reported,
+		validate: middleware.NewValidation(),
 	}
 }
 
 func(k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
+	err := k.validate.Validate(req)
+	if err != nil {
+		return nil, k.validate.Error(err)
+	}
+
 	data, err := k.krepo.Create(req)
 	if err != nil {
 		return nil, util.Errors(err)
@@ -47,7 +55,7 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 				Price: int(o.Price),
 				QtyAvailable: int(o.QtyAvailable),
 			}
-			
+
 			obat = append(obat, ob)
 		}
 
@@ -68,7 +76,7 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 		Address: data.User.Address,
 		Penyakit: penyakit,
 	}
-	
+
 	return &response, nil
 }
 
@@ -92,17 +100,17 @@ func(k *kunjungan) Find(userID uint) (*[]web.Kunjungan, error) {
 					Price: int(o.Price),
 					QtyAvailable: int(o.QtyAvailable),
 				}
-				
+
 				obat = append(obat, ob)
 			}
-	
+
 			py := web.Penyakit{
 				ID: p.ID,
 				Name: p.Name,
 				Description: p.Description,
 				Obat: obat,
 			}
-	
+
 			penyakit = append(penyakit, py)
 		}
 

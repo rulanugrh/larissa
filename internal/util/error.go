@@ -33,3 +33,9 @@ func Errors(err error) Error {
 		Message: fmt.Sprintf("something error: %s", err.Error()),
 	}
 }
+
+func Validation(msg string) Error {
+	return Error{
+		Message: msg,
+	}
+}
