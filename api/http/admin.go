@@ -18,6 +18,7 @@ type AdminInterface interface {
 	DeleteObat(w http.ResponseWriter, r *http.Request)
 	DeletePenyakit(w http.ResponseWriter, r *http.Request)
 	Reported(w http.ResponseWriter, r *http.Request)
+	ListAllUser(w http.ResponseWriter, r *http.Request)
 }
 
 type admin struct {
@@ -158,6 +159,21 @@ func(a *admin) Reported(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := util.WriteJSON(util.Success("data reported found", data))
+	w.WriteHeader(200)
+	w.Write(response)
+	return
+}
+
+func(a *admin) ListAllUser(w http.ResponseWriter, r *http.Request) {
+	data, err := a.service.ListAllUser()
+	if err != nil {
+		response := util.WriteJSON(util.BadRequest(err.Error()))
+		w.WriteHeader(400)
+		w.Write(response)
+		return
+	}
+
+	response := util.WriteJSON(util.Success("data user found", data))
 	w.WriteHeader(200)
 	w.Write(response)
 	return

@@ -5,6 +5,7 @@ import (
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
+	"github.com/rulanugrh/larissa/pkg"
 )
 
 type AdminInterface interface {
@@ -14,19 +15,24 @@ type AdminInterface interface {
 	DeleteObat(id uint) error
 	DeletePenyakit(id uint) error
 	Reported() (*[]web.Reported, error)
+	ListAllUser() (*[]web.User, error)
 }
 
 type admin struct {
 	obat repository.ObatInterface
 	penyakit repository.PenyakitInterface
 	reported repository.ReportedInterface
+	user repository.UserInterface
+	gauge *pkg.Data
 }
 
-func NewAdmin(obat repository.ObatInterface, penyakit repository.PenyakitInterface, reported repository.ReportedInterface) AdminInterface {
+func NewAdmin(obat repository.ObatInterface, penyakit repository.PenyakitInterface, reported repository.ReportedInterface, user repository.UserInterface, gauge *pkg.Data) AdminInterface {
 	return &admin{
 		obat: obat,
 		penyakit: penyakit,
 		reported: reported,
+		user: user,
+		gauge: gauge,
 	}
 }
 
@@ -42,6 +48,7 @@ func(a *admin) CreatePenyakit(req domain.Penyakit) (*web.PenyakitCreated, error)
 		Description: data.Description,
 	}
 
+	a.gauge.Penyakit.Inc()
 	return &response, nil
 }
 
@@ -116,5 +123,31 @@ func(a *admin) Reported() (*[]web.Reported, error) {
 		response = append(response, result)
 	}
 
+	a.gauge.Kunjungan.Set(float64(len(*data)))
+	return &response, nil
+}
+
+func (a *admin) ListAllUser() (*[]web.User, error) {
+	data, err := a.user.ListAll()
+	if err != nil {
+		return nil, util.Errors(err)
+	}
+
+	var response []web.User
+	for _, v := range *data {
+		result := web.User{
+			ID: v.ID,
+			FName: v.FName,
+			LName: v.LName,
+			Email: v.Email,
+			Age: v.Age,
+			Address: v.Address,
+			TTL: v.TTL,
+		}
+
+		response = append(response, result)
+	}
+
+	a.gauge.User.Set(float64(len(*data)))
 	return &response, nil
 }

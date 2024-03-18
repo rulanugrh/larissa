@@ -4,6 +4,7 @@ import (
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
+	"github.com/rulanugrh/larissa/pkg"
 )
 
 type ObatInterface interface {
@@ -13,11 +14,13 @@ type ObatInterface interface {
 
 type obat struct {
 	orepo  repository.ObatInterface
+	metric pkg.Data
 }
 
-func NewObat(orepo repository.ObatInterface) ObatInterface {
+func NewObat(orepo repository.ObatInterface, metric pkg.Data) ObatInterface {
 	return &obat{
 		orepo: orepo,
+		metric: metric,
 	}
 }
 
@@ -58,6 +61,8 @@ func(o *obat) FindAll() (*[]web.Obat, error)  {
 
 		response = append(response, result)
 	}
+
+	o.metric.Obat.Set(float64(len(*data)))
 
 	return &response, nil
 }

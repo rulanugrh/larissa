@@ -4,6 +4,7 @@ import (
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
+	"github.com/rulanugrh/larissa/pkg"
 )
 
 type PenyakitInterface interface {
@@ -13,11 +14,13 @@ type PenyakitInterface interface {
 
 type penyakit struct {
 	repository repository.PenyakitInterface
+	gauge pkg.Data
 }
 
-func NewPenyakit(repository repository.PenyakitInterface) PenyakitInterface {
+func NewPenyakit(repository repository.PenyakitInterface, gauge pkg.Data) PenyakitInterface {
 	return &penyakit{
 		repository: repository,
+		gauge: gauge,
 	}
 }
 
@@ -83,5 +86,6 @@ func (p *penyakit) FindAll() (*[]web.Penyakit, error) {
 		response = append(response, result)
 	}
 
+	p.gauge.Penyakit.Set(float64(len(*data)))
 	return &response, nil
 }

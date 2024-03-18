@@ -7,11 +7,15 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	handler "github.com/rulanugrh/larissa/api/http"
 	"github.com/rulanugrh/larissa/internal/config"
 	"github.com/rulanugrh/larissa/internal/middleware"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/service"
+	"github.com/rulanugrh/larissa/pkg"
 )
 
 type API struct {
@@ -59,10 +63,16 @@ func (api *API) AdminRoute(r *mux.Router) {
 	app.HandleFunc("/delete/obat/{id}", api.admin.DeleteObat).Methods("DELETE")
 	app.HandleFunc("/delete/penyakit/{id}", api.admin.DeletePenyakit).Methods("DELETE")
 	app.HandleFunc("/reported", api.admin.Reported).Methods("GET")
+	app.HandleFunc("/user", api.admin.ListAllUser).Methods("GET")
+
 }
 
 func main() {
 	command := os.Args[1]
+	reg := prometheus.NewRegistry()
+	reg.MustRegister(collectors.NewGoCollector())
+	m := pkg.NewMetric(reg)
+	gauge := m.SetGauge()
 
 	conf := config.GetConfig()
 	postgres := config.InitializePostgres(conf)
@@ -76,10 +86,10 @@ func main() {
 	reportedRepository := repository.NewReported(mongo.Conn, conf)
 
 	userService := service.NewUser(userRepository)
-	obatService := service.NewObat(obatRepository)
+	obatService := service.NewObat(obatRepository, *gauge)
 	kunjunganServices := service.NewKunjungan(kunjunganRepository, reportedRepository)
-	penyakitService := service.NewPenyakit(penyakitRepository)
-	adminService := service.NewAdmin(obatRepository, penyakitRepository, reportedRepository)
+	penyakitService := service.NewPenyakit(penyakitRepository, *gauge)
+	adminService := service.NewAdmin(obatRepository, penyakitRepository, reportedRepository, userRepository, gauge)
 
 	api := API{
 		obat:      handler.NewObat(obatService),
@@ -90,8 +100,10 @@ func main() {
 	}
 
 	routes := mux.NewRouter()
+	promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
 
 	// add routes
+	routes.Handle("/metric", promHandler).Methods("GET")
 	api.UserRoute(routes)
 	api.AdminRoute(routes)
 	api.ObatRoute(routes)
