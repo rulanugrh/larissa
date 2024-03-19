@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/entity/web"
@@ -83,6 +85,7 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 
 
 	k.gauge.Kunjungan.Inc()
+	k.gauge.KunjunganHistory.With(prometheus.Labels{"code": "200", "method": "POST", "type": "create"}).Observe(time.Since(time.Now()).Seconds())
 	k.gauge.KunjunganUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }

@@ -1,6 +1,9 @@
 package service
 
 import (
+	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
@@ -62,6 +65,7 @@ func(o *obat) FindAll() (*[]web.Obat, error)  {
 		response = append(response, result)
 	}
 
+	o.metric.ObatHistory.With(prometheus.Labels{"code": "200", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
 	o.metric.Obat.Set(float64(len(*data)))
 
 	return &response, nil

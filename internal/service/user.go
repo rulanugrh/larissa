@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/entity/web"
@@ -68,6 +70,7 @@ func(u *user) Register(req domain.UserRegister) (*web.User, error) {
 	}
 
 	u.gauge.User.Inc()
+	u.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "POST", "type": "update"}).Observe(time.Since(time.Now()).Seconds())
 	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }
@@ -92,7 +95,7 @@ func(u *user) Login(req domain.UserLogin) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	u.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "POST", "type": "login"}).Observe(time.Since(time.Now()).Seconds())
 	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "login"}).Inc()
 	return &token, nil
 }
@@ -104,6 +107,7 @@ func(u *user) Update(id uint, req domain.User) error {
 		return util.Errors(err)
 	}
 
+	u.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "PUT", "type": "update"}).Observe(time.Since(time.Now()).Seconds())
 	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "update"}).Inc()
 	return nil
 }

@@ -77,23 +77,27 @@ func (m *Metric) SetGauge() *Data {
 		}, []string{"type"}),
 		KunjunganHistory: prometheus.NewHistogramVec(prometheus.HistogramOpts{
 			Namespace: "kunjungan",
-			Name: "kunjungan_histogram",
-			Help: "Histogram for any request in endpoint kunjungan",
+			Name: "kunjungan_duration_request_seconds",
+			Help: "Duration request in endpoint kunjungan",
+			Buckets: []float64{0.1, 0.15, 0.2, 0.25, 0.3},
 		}, []string{"method", "code", "type"}),
 		ObatHistory: prometheus.NewHistogramVec(prometheus.HistogramOpts{
 			Namespace: "obat",
-			Name: "obat_histogram",
-			Help: "Histogram for any request in endpoint obat",
+			Name: "obat_duration_request_seconds",
+			Help: "Duration request in endpoint obat",
+			Buckets: []float64{0.1, 0.15, 0.2, 0.25, 0.3},
 		}, []string{"method", "code", "type"}),
 		UserHistory: prometheus.NewHistogramVec(prometheus.HistogramOpts{
 			Namespace: "user",
-			Name: "user_histogram",
-			Help: "Histogram for any request in endpoint user",
+			Name: "user_duration_request_seconds",
+			Help: "Duration request in endpoint user",
+			Buckets: []float64{0.1, 0.15, 0.2, 0.25, 0.3},
 		}, []string{"method", "code", "type"}),
 		PenyakitHistory: prometheus.NewHistogramVec(prometheus.HistogramOpts{
 			Namespace: "penyakit",
-			Name: "penyakit_histogram",
-			Help: "Histogram for any request in endpoint penyakit",
+			Name: "penyakit_duration_request_seconds",
+			Help: "Duration request in endpoint penyakit",
+			Buckets: []float64{0.1, 0.15, 0.2, 0.25, 0.3},
 		}, []string{"method", "code", "type"}),
 	}
 

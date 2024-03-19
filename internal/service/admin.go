@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/entity/web"
@@ -50,6 +52,7 @@ func(a *admin) CreatePenyakit(req domain.Penyakit) (*web.PenyakitCreated, error)
 	}
 
 	a.gauge.Penyakit.Inc()
+	a.gauge.PenyakitHistory.With(prometheus.Labels{"code": "200", "method": "POST", "type": "create"}).Observe(time.Since(time.Now()).Seconds())
 	a.gauge.PenyakitUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }
@@ -70,6 +73,7 @@ func(a *admin) CreateObat(req domain.Obat) (*web.ObatCreated, error) {
 	}
 
 	a.gauge.Obat.Inc()
+	a.gauge.ObatHistory.With(prometheus.Labels{"code": "200", "method": "POST", "type": "create"}).Observe(time.Since(time.Now()).Seconds())
 	a.gauge.ObatUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }
@@ -88,6 +92,8 @@ func(a *admin) UpdateObat(id uint, req domain.Obat) (*web.ObatUpdated, error) {
 		QtyAvailable: data.QtyAvailable,
 	}
 
+
+	a.gauge.ObatHistory.With(prometheus.Labels{"code": "200", "method": "PUT", "type": "update"}).Observe(time.Since(time.Now()).Seconds())
 	a.gauge.ObatUpgrade.With(prometheus.Labels{"type": "update"}).Inc()
 	return &response, nil
 }
@@ -98,6 +104,7 @@ func(a *admin) DeleteObat(id uint) error {
 		return util.Errors(err)
 	}
 
+	a.gauge.ObatHistory.With(prometheus.Labels{"code": "204", "method": "DELETE", "type": "delete"}).Observe(time.Since(time.Now()).Seconds())
 	a.gauge.ObatUpgrade.With(prometheus.Labels{"type": "delete"}).Inc()
 	return nil
 }
@@ -108,6 +115,7 @@ func(a *admin) DeletePenyakit(id uint) error {
 		return util.Errors(err)
 	}
 
+	a.gauge.PenyakitHistory.With(prometheus.Labels{"code": "204", "method": "DELETE", "type": "delete"}).Observe(time.Since(time.Now()).Seconds())
 	a.gauge.PenyakitUpgrade.With(prometheus.Labels{"type": "delete"}).Inc()
 	return nil
 }
@@ -130,6 +138,7 @@ func(a *admin) Reported() (*[]web.Reported, error) {
 		response = append(response, result)
 	}
 
+	a.gauge.KunjunganHistory.With(prometheus.Labels{"code": "200", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
 	a.gauge.Kunjungan.Set(float64(len(*data)))
 	return &response, nil
 }
@@ -155,6 +164,7 @@ func (a *admin) ListAllUser() (*[]web.User, error) {
 		response = append(response, result)
 	}
 
+	a.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
 	a.gauge.User.Set(float64(len(*data)))
 	return &response, nil
 }
