@@ -17,6 +17,10 @@ type Data struct {
 	ObatUpgrade      *prometheus.CounterVec
 	UserUpgrade      *prometheus.CounterVec
 	PenyakitUpgrade  *prometheus.CounterVec
+	KunjunganHistory *prometheus.HistogramVec
+	ObatHistory      *prometheus.HistogramVec
+	UserHistory      *prometheus.HistogramVec
+	PenyakitHistory  *prometheus.HistogramVec
 }
 
 type Metric struct {
@@ -71,9 +75,29 @@ func (m *Metric) SetGauge() *Data {
 			Name:      "kunjungan_update_counter",
 			Help:      "For create, update, and deleted",
 		}, []string{"type"}),
+		KunjunganHistory: prometheus.NewHistogramVec(prometheus.HistogramOpts{
+			Namespace: "kunjungan",
+			Name: "kunjungan_histogram",
+			Help: "Histogram for any request in endpoint kunjungan",
+		}, []string{"method", "code", "type"}),
+		ObatHistory: prometheus.NewHistogramVec(prometheus.HistogramOpts{
+			Namespace: "obat",
+			Name: "obat_histogram",
+			Help: "Histogram for any request in endpoint obat",
+		}, []string{"method", "code", "type"}),
+		UserHistory: prometheus.NewHistogramVec(prometheus.HistogramOpts{
+			Namespace: "user",
+			Name: "user_histogram",
+			Help: "Histogram for any request in endpoint user",
+		}, []string{"method", "code", "type"}),
+		PenyakitHistory: prometheus.NewHistogramVec(prometheus.HistogramOpts{
+			Namespace: "penyakit",
+			Name: "penyakit_histogram",
+			Help: "Histogram for any request in endpoint penyakit",
+		}, []string{"method", "code", "type"}),
 	}
 
-	m.reg.MustRegister(ms.Kunjungan, ms.Obat, ms.Penyakit, ms.User, ms.KunjunganUpgrade, ms.ObatUpgrade, ms.PenyakitUpgrade, ms.UserUpgrade)
+	m.reg.MustRegister(ms.Kunjungan, ms.Obat, ms.Penyakit, ms.User, ms.KunjunganUpgrade, ms.ObatUpgrade, ms.PenyakitUpgrade, ms.UserUpgrade, ms.KunjunganHistory, ms.ObatHistory, ms.UserHistory, ms.PenyakitHistory)
 
 	return &ms
 }
