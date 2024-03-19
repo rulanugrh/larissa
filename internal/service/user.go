@@ -1,15 +1,11 @@
 package service
 
 import (
-	"time"
-
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/middleware"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
-	"github.com/rulanugrh/larissa/pkg"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -22,14 +18,12 @@ type UserInterface interface {
 type user struct {
 	urepo repository.UserInterface
 	validate middleware.IValidation
-	gauge pkg.Data
 }
 
-func NewUser(urepo repository.UserInterface, gauge pkg.Data) UserInterface {
+func NewUser(urepo repository.UserInterface) UserInterface {
 	return &user{
 		urepo: urepo,
 		validate: middleware.NewValidation(),
-		gauge: gauge,
 	}
 }
 
@@ -69,9 +63,7 @@ func(u *user) Register(req domain.UserRegister) (*web.User, error) {
 		TTL: data.TTL,
 	}
 
-	u.gauge.User.Inc()
-	u.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "POST", "type": "update"}).Observe(time.Since(time.Now()).Seconds())
-	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
+
 	return &response, nil
 }
 
@@ -95,8 +87,7 @@ func(u *user) Login(req domain.UserLogin) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-	u.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "POST", "type": "login"}).Observe(time.Since(time.Now()).Seconds())
-	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "login"}).Inc()
+
 	return &token, nil
 }
 
@@ -107,7 +98,5 @@ func(u *user) Update(id uint, req domain.User) error {
 		return util.Errors(err)
 	}
 
-	u.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "PUT", "type": "update"}).Observe(time.Since(time.Now()).Seconds())
-	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "update"}).Inc()
 	return nil
 }

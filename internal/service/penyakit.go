@@ -1,13 +1,9 @@
 package service
 
 import (
-	"time"
-
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
-	"github.com/rulanugrh/larissa/pkg"
 )
 
 type PenyakitInterface interface {
@@ -17,13 +13,11 @@ type PenyakitInterface interface {
 
 type penyakit struct {
 	repository repository.PenyakitInterface
-	gauge pkg.Data
 }
 
-func NewPenyakit(repository repository.PenyakitInterface, gauge pkg.Data) PenyakitInterface {
+func NewPenyakit(repository repository.PenyakitInterface) PenyakitInterface {
 	return &penyakit{
 		repository: repository,
-		gauge: gauge,
 	}
 }
 
@@ -88,9 +82,6 @@ func (p *penyakit) FindAll() (*[]web.Penyakit, error) {
 
 		response = append(response, result)
 	}
-
-	p.gauge.PenyakitHistory.With(prometheus.Labels{"code": "200", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
-	p.gauge.Penyakit.Set(float64(len(*data)))
 
 	return &response, nil
 }

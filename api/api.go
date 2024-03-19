@@ -85,18 +85,18 @@ func main() {
 	penyakitRepository := repository.NewPenyakit(postgres)
 	reportedRepository := repository.NewReported(mongo.Conn, conf)
 
-	userService := service.NewUser(userRepository, *gauge)
-	obatService := service.NewObat(obatRepository, *gauge)
-	kunjunganServices := service.NewKunjungan(kunjunganRepository, reportedRepository, *gauge)
-	penyakitService := service.NewPenyakit(penyakitRepository, *gauge)
-	adminService := service.NewAdmin(obatRepository, penyakitRepository, reportedRepository, userRepository, gauge)
+	userService := service.NewUser(userRepository)
+	obatService := service.NewObat(obatRepository)
+	kunjunganServices := service.NewKunjungan(kunjunganRepository, reportedRepository)
+	penyakitService := service.NewPenyakit(penyakitRepository)
+	adminService := service.NewAdmin(obatRepository, penyakitRepository, reportedRepository, userRepository)
 
 	api := API{
-		obat:      handler.NewObat(obatService),
-		user:      handler.NewUser(userService),
-		kunjungan: handler.NewKunjungan(kunjunganServices),
-		penyakit:  handler.NewPenyakit(penyakitService),
-		admin:     handler.NewAdmin(adminService),
+		obat:      handler.NewObat(obatService, gauge),
+		user:      handler.NewUser(userService, gauge),
+		kunjungan: handler.NewKunjungan(kunjunganServices, gauge),
+		penyakit:  handler.NewPenyakit(penyakitService, gauge),
+		admin:     handler.NewAdmin(adminService, gauge),
 	}
 
 	routes := mux.NewRouter()
