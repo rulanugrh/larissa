@@ -49,6 +49,7 @@ func(a *admin) CreatePenyakit(req domain.Penyakit) (*web.PenyakitCreated, error)
 		Description: data.Description,
 	}
 
+	a.gauge.Penyakit.Inc()
 	a.gauge.PenyakitUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }
@@ -68,6 +69,7 @@ func(a *admin) CreateObat(req domain.Obat) (*web.ObatCreated, error) {
 		Name: data.Name,
 	}
 
+	a.gauge.Obat.Inc()
 	a.gauge.ObatUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }

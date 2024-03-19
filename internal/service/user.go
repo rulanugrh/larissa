@@ -67,6 +67,7 @@ func(u *user) Register(req domain.UserRegister) (*web.User, error) {
 		TTL: data.TTL,
 	}
 
+	u.gauge.User.Inc()
 	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }
@@ -92,6 +93,7 @@ func(u *user) Login(req domain.UserLogin) (*string, error) {
 		return nil, err
 	}
 
+	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "login"}).Inc()
 	return &token, nil
 }
 
@@ -102,5 +104,6 @@ func(u *user) Update(id uint, req domain.User) error {
 		return util.Errors(err)
 	}
 
+	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "update"}).Inc()
 	return nil
 }
