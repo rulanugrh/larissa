@@ -9,14 +9,14 @@ type IPrometheus interface {
 }
 
 type Data struct {
-	Kunjungan prometheus.Gauge
-	Obat prometheus.Gauge
-	User prometheus.Gauge
-	Penyakit prometheus.Gauge
+	Kunjungan        prometheus.Gauge
+	Obat             prometheus.Gauge
+	User             prometheus.Gauge
+	Penyakit         prometheus.Gauge
 	KunjunganUpgrade *prometheus.CounterVec
-	ObatUpgrade *prometheus.CounterVec
-	UserUpgrade *prometheus.CounterVec
-	PenyakitUpgrade *prometheus.CounterVec
+	ObatUpgrade      *prometheus.CounterVec
+	UserUpgrade      *prometheus.CounterVec
+	PenyakitUpgrade  *prometheus.CounterVec
 }
 
 type Metric struct {
@@ -53,23 +53,23 @@ func (m *Metric) SetGauge() *Data {
 		}),
 		PenyakitUpgrade: prometheus.NewCounterVec(prometheus.CounterOpts{
 			Namespace: "penyakit",
-			Name: "penyakit_update_counter",
-			Help: "For create, update, and deleted",
+			Name:      "penyakit_update_counter",
+			Help:      "For create, update, and deleted",
 		}, []string{"type"}),
 		ObatUpgrade: prometheus.NewCounterVec(prometheus.CounterOpts{
 			Namespace: "obat",
-			Name: "obat_update_counter",
-			Help: "For create, update, and deleted",
+			Name:      "obat_update_counter",
+			Help:      "For create, update, and deleted",
 		}, []string{"type"}),
 		UserUpgrade: prometheus.NewCounterVec(prometheus.CounterOpts{
 			Namespace: "user",
-			Name: "user_update_counter",
-			Help: "For create, update, and deleted",
+			Name:      "user_update_counter",
+			Help:      "For create, update, and deleted",
 		}, []string{"type"}),
 		KunjunganUpgrade: prometheus.NewCounterVec(prometheus.CounterOpts{
 			Namespace: "kunjungan",
-			Name: "kunjungan_update_counter",
-			Help: "For create, update, and deleted",
+			Name:      "kunjungan_update_counter",
+			Help:      "For create, update, and deleted",
 		}, []string{"type"}),
 	}
 
