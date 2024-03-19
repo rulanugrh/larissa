@@ -81,6 +81,7 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 		Penyakit: penyakit,
 	}
 
+
 	k.gauge.Kunjungan.Inc()
 	k.gauge.KunjunganUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
