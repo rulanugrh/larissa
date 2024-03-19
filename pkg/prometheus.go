@@ -13,7 +13,10 @@ type Data struct {
 	Obat prometheus.Gauge
 	User prometheus.Gauge
 	Penyakit prometheus.Gauge
-	Info *prometheus.GaugeVec
+	KunjunganUpgrade *prometheus.CounterVec
+	ObatUpgrade *prometheus.CounterVec
+	UserUpgrade *prometheus.CounterVec
+	PenyakitUpgrade *prometheus.CounterVec
 }
 
 type Metric struct {
@@ -29,34 +32,48 @@ func NewMetric(reg prometheus.Registerer) IPrometheus {
 func (m *Metric) SetGauge() *Data {
 	ms := Data{
 		Kunjungan: prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "Kunjungan Namespace",
+			Namespace: "kunjungan",
 			Name:      "list_all_kunjungan",
 			Help:      "Banyaknya user yang telah melakukan kunjungan",
 		}),
 		Obat: prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "Obat Namespace",
+			Namespace: "obat",
 			Name:      "list_all_obat",
 			Help:      "Banyaknya user yang telah melihat list obat",
 		}),
 		User: prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "User Namespace",
+			Namespace: "user",
 			Name:      "list_all_user",
 			Help:      "Banyaknya user yang telah melakukan register",
 		}),
 		Penyakit: prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "Penyakit Namespace",
+			Namespace: "penyakit",
 			Name:      "list_all_penyakit",
 			Help:      "Banyaknya user yang telah melihat list daripada penyakit",
 		}),
-		Info: prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: "Larissa App",
-			Name: "info",
-			Help: "Information about my app",
-		}, []string{}),
-
+		PenyakitUpgrade: prometheus.NewCounterVec(prometheus.CounterOpts{
+			Namespace: "penyakit",
+			Name: "penyakit_update_counter",
+			Help: "For create, update, and deleted",
+		}, []string{"type"}),
+		ObatUpgrade: prometheus.NewCounterVec(prometheus.CounterOpts{
+			Namespace: "obat",
+			Name: "obat_update_counter",
+			Help: "For create, update, and deleted",
+		}, []string{"type"}),
+		UserUpgrade: prometheus.NewCounterVec(prometheus.CounterOpts{
+			Namespace: "user",
+			Name: "user_update_counter",
+			Help: "For create, update, and deleted",
+		}, []string{"type"}),
+		KunjunganUpgrade: prometheus.NewCounterVec(prometheus.CounterOpts{
+			Namespace: "kunjungan",
+			Name: "kunjungan_update_counter",
+			Help: "For create, update, and deleted",
+		}, []string{"type"}),
 	}
 
-	m.reg.MustRegister(ms.Kunjungan, ms.Obat, ms.Penyakit, ms.User, ms.Info)
+	m.reg.MustRegister(ms.Kunjungan, ms.Obat, ms.Penyakit, ms.User, ms.KunjunganUpgrade, ms.ObatUpgrade, ms.PenyakitUpgrade, ms.UserUpgrade)
 
 	return &ms
 }

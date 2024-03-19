@@ -1,11 +1,13 @@
 package service
 
 import (
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/middleware"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
+	"github.com/rulanugrh/larissa/pkg"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,12 +20,14 @@ type UserInterface interface {
 type user struct {
 	urepo repository.UserInterface
 	validate middleware.IValidation
+	gauge pkg.Data
 }
 
-func NewUser(urepo repository.UserInterface) UserInterface {
+func NewUser(urepo repository.UserInterface, gauge pkg.Data) UserInterface {
 	return &user{
 		urepo: urepo,
 		validate: middleware.NewValidation(),
+		gauge: gauge,
 	}
 }
 
@@ -63,6 +67,7 @@ func(u *user) Register(req domain.UserRegister) (*web.User, error) {
 		TTL: data.TTL,
 	}
 
+	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }
 

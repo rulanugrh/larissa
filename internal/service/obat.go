@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
@@ -64,7 +63,6 @@ func(o *obat) FindAll() (*[]web.Obat, error)  {
 	}
 
 	o.metric.Obat.Set(float64(len(*data)))
-	o.metric.Info.With(prometheus.Labels{"services": "obat"}).Set(1)
 
 	return &response, nil
 }

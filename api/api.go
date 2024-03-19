@@ -85,9 +85,9 @@ func main() {
 	penyakitRepository := repository.NewPenyakit(postgres)
 	reportedRepository := repository.NewReported(mongo.Conn, conf)
 
-	userService := service.NewUser(userRepository)
+	userService := service.NewUser(userRepository, *gauge)
 	obatService := service.NewObat(obatRepository, *gauge)
-	kunjunganServices := service.NewKunjungan(kunjunganRepository, reportedRepository)
+	kunjunganServices := service.NewKunjungan(kunjunganRepository, reportedRepository, *gauge)
 	penyakitService := service.NewPenyakit(penyakitRepository, *gauge)
 	adminService := service.NewAdmin(obatRepository, penyakitRepository, reportedRepository, userRepository, gauge)
 

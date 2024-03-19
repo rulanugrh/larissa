@@ -1,11 +1,13 @@
 package service
 
 import (
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/domain"
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/middleware"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
+	"github.com/rulanugrh/larissa/pkg"
 )
 
 type KunjunganInterface interface {
@@ -17,13 +19,15 @@ type kunjungan struct {
 	krepo repository.KunjunganInterface
 	reported repository.ReportedInterface
 	validate middleware.IValidation
+	gauge pkg.Data
 }
 
-func NewKunjungan(krepo repository.KunjunganInterface, reported repository.ReportedInterface) KunjunganInterface {
+func NewKunjungan(krepo repository.KunjunganInterface, reported repository.ReportedInterface, gauge pkg.Data) KunjunganInterface {
 	return &kunjungan{
 		krepo: krepo,
 		reported: reported,
 		validate: middleware.NewValidation(),
+		gauge: gauge,
 	}
 }
 
@@ -77,6 +81,7 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 		Penyakit: penyakit,
 	}
 
+	k.gauge.KunjunganUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }
 

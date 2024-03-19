@@ -49,7 +49,7 @@ func(a *admin) CreatePenyakit(req domain.Penyakit) (*web.PenyakitCreated, error)
 		Description: data.Description,
 	}
 
-	a.gauge.Penyakit.Inc()
+	a.gauge.PenyakitUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }
 
@@ -68,6 +68,7 @@ func(a *admin) CreateObat(req domain.Obat) (*web.ObatCreated, error) {
 		Name: data.Name,
 	}
 
+	a.gauge.ObatUpgrade.With(prometheus.Labels{"type": "create"}).Inc()
 	return &response, nil
 }
 
@@ -85,6 +86,7 @@ func(a *admin) UpdateObat(id uint, req domain.Obat) (*web.ObatUpdated, error) {
 		QtyAvailable: data.QtyAvailable,
 	}
 
+	a.gauge.ObatUpgrade.With(prometheus.Labels{"type": "update"}).Inc()
 	return &response, nil
 }
 
@@ -94,6 +96,7 @@ func(a *admin) DeleteObat(id uint) error {
 		return util.Errors(err)
 	}
 
+	a.gauge.ObatUpgrade.With(prometheus.Labels{"type": "delete"}).Inc()
 	return nil
 }
 
@@ -103,6 +106,7 @@ func(a *admin) DeletePenyakit(id uint) error {
 		return util.Errors(err)
 	}
 
+	a.gauge.PenyakitUpgrade.With(prometheus.Labels{"type": "delete"}).Inc()
 	return nil
 }
 
@@ -125,7 +129,6 @@ func(a *admin) Reported() (*[]web.Reported, error) {
 	}
 
 	a.gauge.Kunjungan.Set(float64(len(*data)))
-	a.gauge.Info.With(prometheus.Labels{"services": "reported"}).Set(1)
 	return &response, nil
 }
 
@@ -151,6 +154,5 @@ func (a *admin) ListAllUser() (*[]web.User, error) {
 	}
 
 	a.gauge.User.Set(float64(len(*data)))
-	a.gauge.Info.With(prometheus.Labels{"services": "user"}).Set(1)
 	return &response, nil
 }

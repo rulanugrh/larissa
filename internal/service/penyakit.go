@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
@@ -88,7 +87,6 @@ func (p *penyakit) FindAll() (*[]web.Penyakit, error) {
 	}
 
 	p.gauge.Penyakit.Set(float64(len(*data)))
-	p.gauge.Info.With(prometheus.Labels{"services": "penyakit"}).Set(1)
 
 	return &response, nil
 }
