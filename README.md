@@ -36,3 +36,84 @@ $ cp .env.example .env
 docker-compose up -d db
 docker-compose up -d
 ```
+
+## Directory
+```
+C:.
+|   .env.example
+|   .gitignore
+|   .pre-commit-config.yaml
+|   build.sh
+|   docker-compose.yml
+|   Dockerfile
+|   go.mod
+|   go.sum
+|   LICENSE
+|   README.md
+|
++---.github
+|   \---workflows
+|           go-action.yml
+|
++---api
+|   |   api.go
+|   |
+|   \---http
+|           admin.go
+|           kunjungan.go
+|           obat.go
+|           penyakit.go
+|           user.go
+|
++---docs
++---infrastructure
+|       grafana.yaml
+|       prometheus.yml
+|
++---internal
+|   +---config
+|   |       app.go
+|   |       mongodb.go
+|   |       postgresql.go
+|   |
+|   +---entity
+|   |   +---domain
+|   |   |       kunjungan.go
+|   |   |       obat.go
+|   |   |       penyakit.go
+|   |   |       reporter.go
+|   |   |       role.go
+|   |   |       user.go
+|   |   |
+|   |   \---web
+|   |           admin.go
+|   |           penyakit.go
+|   |           reported.go
+|   |           user.go
+|   |
+|   +---middleware
+|   |       jwt.go
+|   |       validation.go
+|   |
+|   +---repository
+|   |       kunjungan.go
+|   |       obat.go
+|   |       penyakit.go
+|   |       reported.go
+|   |       user.go
+|   |
+|   +---service
+|   |       admin.go
+|   |       kunjungan.go
+|   |       obat.go
+|   |       penyakit.go
+|   |       user.go
+|   |
+|   \---util
+|           error.go
+|           json.go
+|           response.go
+|
+\---pkg
+        prometheus.go
+```
