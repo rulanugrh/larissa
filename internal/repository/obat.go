@@ -35,12 +35,17 @@ func(o *obat) Create(req domain.Obat) (*domain.Obat, error) {
 		return nil, util.Errors(err)
 	}
 
+	err = o.client.DB.Preload("Penyakit").Find(&req).Error
+	if err != nil {
+		return nil, util.Errors(err)
+	}
+
 	return &req, nil
 }
 
 func(o *obat) FindID(id uint) (*domain.Obat, error) {
 	var model domain.Obat
-	err := o.client.DB.Where("id = ?", id).Find(&model).Error
+	err := o.client.DB.Where("id = ?", id).Preload("Penyakit").Find(&model).Error
 
 	if err != nil {
 		return nil, util.Errors(err)
@@ -52,7 +57,7 @@ func(o *obat) FindID(id uint) (*domain.Obat, error) {
 func(o *obat) FindAll() (*[]domain.Obat, error) {
 	var finds []domain.Obat
 
-	err := o.client.DB.Find(&finds).Error
+	err := o.client.DB.Preload("Penyakit").Find(&finds).Error
 	if err != nil {
 		return nil, util.Errors(err)
 	}

@@ -44,7 +44,7 @@ func(p *penyakit) Create(req domain.Penyakit) (*domain.Penyakit, error) {
 
 func(p *penyakit) ListAll() (*[]domain.Penyakit, error) {
 	var model []domain.Penyakit
-	err := p.client.DB.Find(model).Error
+	err := p.client.DB.Preload("Obat").Find(model).Error
 
 	if err != nil {
 		return nil, util.Errors(err)
@@ -55,7 +55,7 @@ func(p *penyakit) ListAll() (*[]domain.Penyakit, error) {
 
 func(p *penyakit) FindID(id uint) (*domain.Penyakit, error) {
 	var model domain.Penyakit
-	find := p.client.DB.Where("id = ?", id).Find(&model)
+	find := p.client.DB.Preload("Obat").Where("id = ?", id).Find(&model)
 
 	if find.RowsAffected == 0 {
 		return nil, util.NotFound()
@@ -64,6 +64,7 @@ func(p *penyakit) FindID(id uint) (*domain.Penyakit, error) {
 	if find.Error != nil {
 		return nil, util.Errors(find.Error)
 	}
+
 
 	return &model, nil
 }

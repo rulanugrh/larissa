@@ -27,6 +27,11 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {
 		return nil, util.Errors(err)
 	}
 
+	err = k.client.DB.Preload("Penyakit").Preload("User").Find(&req).Error
+	if err != nil {
+		return nil, util.Errors(err)
+	}
+
 	return &req, nil
 }
 
@@ -40,6 +45,12 @@ func(k *kunjungan) List(id uint) (*[]domain.Kunjungan, error) {
 	if find.Error != nil {
 		return nil, util.Errors(find.Error)
 	}
+
+	err := k.client.DB.Preload("Penyakit").Preload("User").Find(&model).Error
+	if err != nil {
+		return nil, util.Errors(err)
+	}
+
 
 	return &model, nil
 }
