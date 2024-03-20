@@ -29,6 +29,11 @@ func(p *penyakit) Create(req domain.Penyakit) (*domain.Penyakit, error) {
 		return nil, util.Errors(err)
 	}
 
+	err = p.client.DB.Preload("Obat").Find(&req).Error
+	if err != nil {
+		return nil, util.Errors(err)
+	}
+
 	err = p.client.DB.Model(&req.Obat).Association("Penyakit").Append(&req)
 	if err != nil {
 		return nil, util.Errors(err)
