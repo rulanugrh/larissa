@@ -27,9 +27,9 @@ func NewReported(client *mongo.Client, conf *config.App) ReportedInterface {
 	}
 }
 
-func(r *reported) List() (*[]domain.Reported, error) {
+func (r *reported) List() (*[]domain.Reported, error) {
 	var response []domain.Reported
-	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
 	result, err := r.client.Find(ctx, bson.M{})
@@ -50,9 +50,9 @@ func(r *reported) List() (*[]domain.Reported, error) {
 	return &response, nil
 }
 
-func(r *reported) Create(req *domain.Kunjungan) error {
+func (r *reported) Create(req *domain.Kunjungan) error {
 	var reported domain.Reported
-	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
 	reported.Pengunjung = req.User.FName + req.User.LName

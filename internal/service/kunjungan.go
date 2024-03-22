@@ -14,20 +14,20 @@ type KunjunganInterface interface {
 }
 
 type kunjungan struct {
-	krepo repository.KunjunganInterface
+	krepo    repository.KunjunganInterface
 	reported repository.ReportedInterface
 	validate middleware.IValidation
 }
 
 func NewKunjungan(krepo repository.KunjunganInterface, reported repository.ReportedInterface) KunjunganInterface {
 	return &kunjungan{
-		krepo: krepo,
+		krepo:    krepo,
 		reported: reported,
 		validate: middleware.NewValidation(),
 	}
 }
 
-func(k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
+func (k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 	err := k.validate.Validate(req)
 	if err != nil {
 		return nil, k.validate.Error(err)
@@ -53,41 +53,41 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 		var obat []web.Obat
 		for _, o := range *obats {
 			res := web.Obat{
-				ID: o.ID,
-				Price: int(o.Price),
-				Composition: o.Composition,
-				Description: o.Description,
-				Name: o.Name,
+				ID:           o.ID,
+				Price:        int(o.Price),
+				Composition:  o.Composition,
+				Description:  o.Description,
+				Name:         o.Name,
 				QtyAvailable: int(o.QtyAvailable),
-				QtyReserved: int(o.QtyReserved),
-				QtyOn: int(o.QtyOn),
+				QtyReserved:  int(o.QtyReserved),
+				QtyOn:        int(o.QtyOn),
 			}
 
 			obat = append(obat, res)
 		}
 
 		py := web.Penyakit{
-			ID: p.ID,
-			Name: p.Name,
+			ID:          p.ID,
+			Name:        p.Name,
 			Description: p.Description,
-			Obat: obat,
+			Obat:        obat,
 		}
 
 		penyakit = append(penyakit, py)
 	}
 
 	response := web.Kunjungan{
-		FName: data.User.FName,
-		LName: data.User.LName,
-		Age: data.User.Age,
-		Address: data.User.Address,
+		FName:    data.User.FName,
+		LName:    data.User.LName,
+		Age:      data.User.Age,
+		Address:  data.User.Address,
 		Penyakit: penyakit,
 	}
 
 	return &response, nil
 }
 
-func(k *kunjungan) Find(userID uint) (*[]web.Kunjungan, error) {
+func (k *kunjungan) Find(userID uint) (*[]web.Kunjungan, error) {
 	data, err := k.krepo.List(userID)
 	if err != nil {
 		return nil, util.Errors(err)
@@ -99,35 +99,35 @@ func(k *kunjungan) Find(userID uint) (*[]web.Kunjungan, error) {
 		for _, p := range dt.Penyakit {
 			var obat []web.Obat
 			for _, o := range p.Obat {
-				ob := web.Obat {
-					ID: o.ID,
-					Name: o.Name,
-					Composition: o.Composition,
-					Description: o.Description,
-					Price: int(o.Price),
+				ob := web.Obat{
+					ID:           o.ID,
+					Name:         o.Name,
+					Composition:  o.Composition,
+					Description:  o.Description,
+					Price:        int(o.Price),
 					QtyAvailable: int(o.QtyAvailable),
-					QtyReserved: int(o.QtyReserved),
-					QtyOn: int(o.QtyOn),
+					QtyReserved:  int(o.QtyReserved),
+					QtyOn:        int(o.QtyOn),
 				}
 
 				obat = append(obat, ob)
 			}
 
 			py := web.Penyakit{
-				ID: p.ID,
-				Name: p.Name,
+				ID:          p.ID,
+				Name:        p.Name,
 				Description: p.Description,
-				Obat: obat,
+				Obat:        obat,
 			}
 
 			penyakit = append(penyakit, py)
 		}
 
-		result := web.Kunjungan {
-			FName: dt.User.FName,
-			LName: dt.User.LName,
-			Age: dt.User.Age,
-			Address: dt.User.Address,
+		result := web.Kunjungan{
+			FName:    dt.User.FName,
+			LName:    dt.User.LName,
+			Age:      dt.User.Age,
+			Address:  dt.User.Address,
 			Penyakit: penyakit,
 		}
 

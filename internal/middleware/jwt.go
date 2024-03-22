@@ -10,9 +10,9 @@ import (
 )
 
 type jwtclaim struct {
-	ID     uint `json:"id"`
-	RoleID uint `json:"role_id"`
-	Email string `json:"email"`
+	ID     uint   `json:"id"`
+	RoleID uint   `json:"role_id"`
+	Email  string `json:"email"`
 	jwt.RegisteredClaims
 }
 
@@ -22,7 +22,7 @@ func GenerateToken(id uint, roleid uint, email string) (string, error) {
 	claims := &jwtclaim{
 		ID:     id,
 		RoleID: roleid,
-		Email: email,
+		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: time,
 		},
@@ -36,7 +36,6 @@ func GenerateToken(id uint, roleid uint, email string) (string, error) {
 
 	return tokenstring, nil
 }
-
 
 func CheckToken(token string) (*jwtclaim, error) {
 	conf := config.GetConfig()

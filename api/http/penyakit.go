@@ -19,17 +19,17 @@ type PenyakitInterface interface {
 
 type penyakit struct {
 	service service.PenyakitInterface
-	gauge *pkg.Data
+	gauge   *pkg.Data
 }
 
 func NewPenyakit(service service.PenyakitInterface, gauge *pkg.Data) PenyakitInterface {
 	return &penyakit{
 		service: service,
-		gauge: gauge,
+		gauge:   gauge,
 	}
 }
 
-func(p *penyakit) FindAll(w http.ResponseWriter, r *http.Request) {
+func (p *penyakit) FindAll(w http.ResponseWriter, r *http.Request) {
 	data, err := p.service.FindAll()
 	if err != nil {
 		p.gauge.PenyakitHistory.With(prometheus.Labels{"code": "400", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
@@ -48,8 +48,8 @@ func(p *penyakit) FindAll(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-func(p *penyakit) FindID(w http.ResponseWriter, r *http.Request) {
-	id, err  := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/api/penyakit/find/"))
+func (p *penyakit) FindID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/api/penyakit/find/"))
 	if err != nil {
 		w.WriteHeader(500)
 		return

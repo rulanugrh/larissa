@@ -18,73 +18,71 @@ type AdminInterface interface {
 }
 
 type admin struct {
-	obat repository.ObatInterface
+	obat     repository.ObatInterface
 	penyakit repository.PenyakitInterface
 	reported repository.ReportedInterface
-	user repository.UserInterface
+	user     repository.UserInterface
 }
 
 func NewAdmin(obat repository.ObatInterface, penyakit repository.PenyakitInterface, reported repository.ReportedInterface, user repository.UserInterface) AdminInterface {
 	return &admin{
-		obat: obat,
+		obat:     obat,
 		penyakit: penyakit,
 		reported: reported,
-		user: user,
+		user:     user,
 	}
 }
 
-func(a *admin) CreatePenyakit(req domain.Penyakit) (*web.PenyakitCreated, error) {
+func (a *admin) CreatePenyakit(req domain.Penyakit) (*web.PenyakitCreated, error) {
 	data, err := a.penyakit.Create(req)
 	if err != nil {
 		return nil, util.Errors(err)
 	}
 
 	response := web.PenyakitCreated{
-		ID: data.ID,
-		Name: data.Name,
+		ID:          data.ID,
+		Name:        data.Name,
 		Description: data.Description,
 	}
 	return &response, nil
 }
 
-func(a *admin) CreateObat(req domain.Obat) (*web.ObatCreated, error) {
+func (a *admin) CreateObat(req domain.Obat) (*web.ObatCreated, error) {
 	data, err := a.obat.Create(req)
 	if err != nil {
 		return nil, util.Errors(err)
 	}
 
-	response := web.ObatCreated {
-		ID: data.ID,
-		Price: data.Price,
+	response := web.ObatCreated{
+		ID:           data.ID,
+		Price:        data.Price,
 		QtyAvailable: data.QtyAvailable,
-		Description: data.Description,
-		Composition: data.Composition,
-		Name: data.Name,
+		Description:  data.Description,
+		Composition:  data.Composition,
+		Name:         data.Name,
 	}
-
 
 	return &response, nil
 }
 
-func(a *admin) UpdateObat(id uint, req domain.Obat) (*web.ObatUpdated, error) {
+func (a *admin) UpdateObat(id uint, req domain.Obat) (*web.ObatUpdated, error) {
 	data, err := a.obat.Update(id, req)
 	if err != nil {
 		return nil, util.Errors(err)
 	}
 
-	response := web.ObatUpdated {
-		ID: data.ID,
-		Name: data.Name,
-		Description: data.Description,
-		Price: data.Price,
+	response := web.ObatUpdated{
+		ID:           data.ID,
+		Name:         data.Name,
+		Description:  data.Description,
+		Price:        data.Price,
 		QtyAvailable: data.QtyAvailable,
 	}
-
 
 	return &response, nil
 }
 
-func(a *admin) DeleteObat(id uint) error {
+func (a *admin) DeleteObat(id uint) error {
 	err := a.obat.Delete(id)
 	if err != nil {
 		return util.Errors(err)
@@ -93,7 +91,7 @@ func(a *admin) DeleteObat(id uint) error {
 	return nil
 }
 
-func(a *admin) DeletePenyakit(id uint) error {
+func (a *admin) DeletePenyakit(id uint) error {
 	err := a.penyakit.Delete(id)
 	if err != nil {
 		return util.Errors(err)
@@ -102,7 +100,7 @@ func(a *admin) DeletePenyakit(id uint) error {
 	return nil
 }
 
-func(a *admin) Reported() (*[]web.Reported, error) {
+func (a *admin) Reported() (*[]web.Reported, error) {
 	data, err := a.reported.List()
 	if err != nil {
 		return nil, util.Errors(err)
@@ -110,16 +108,15 @@ func(a *admin) Reported() (*[]web.Reported, error) {
 
 	var response []web.Reported
 	for _, v := range *data {
-		result := web.Reported {
-			ID: v.ID,
+		result := web.Reported{
+			ID:         v.ID,
 			Pengunjung: v.Pengunjung,
-			Age: v.Age,
-			Address: v.Address,
+			Age:        v.Age,
+			Address:    v.Address,
 		}
 
 		response = append(response, result)
 	}
-
 
 	return &response, nil
 }
@@ -133,13 +130,13 @@ func (a *admin) ListAllUser() (*[]web.User, error) {
 	var response []web.User
 	for _, v := range *data {
 		result := web.User{
-			ID: v.ID,
-			FName: v.FName,
-			LName: v.LName,
-			Email: v.Email,
-			Age: v.Age,
+			ID:      v.ID,
+			FName:   v.FName,
+			LName:   v.LName,
+			Email:   v.Email,
+			Age:     v.Age,
 			Address: v.Address,
-			TTL: v.TTL,
+			TTL:     v.TTL,
 		}
 
 		response = append(response, result)

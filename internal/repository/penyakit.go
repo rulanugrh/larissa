@@ -23,7 +23,7 @@ func NewPenyakit(client *config.Postgres) PenyakitInterface {
 	}
 }
 
-func(p *penyakit) Create(req domain.Penyakit) (*domain.Penyakit, error) {
+func (p *penyakit) Create(req domain.Penyakit) (*domain.Penyakit, error) {
 	err := p.client.DB.Create(&req).Error
 	if err != nil {
 		return nil, util.Errors(err)
@@ -42,7 +42,7 @@ func(p *penyakit) Create(req domain.Penyakit) (*domain.Penyakit, error) {
 	return &req, nil
 }
 
-func(p *penyakit) ListAll() (*[]domain.Penyakit, error) {
+func (p *penyakit) ListAll() (*[]domain.Penyakit, error) {
 	var model []domain.Penyakit
 	err := p.client.DB.Preload("Obat").Find(model).Error
 
@@ -53,7 +53,7 @@ func(p *penyakit) ListAll() (*[]domain.Penyakit, error) {
 	return &model, nil
 }
 
-func(p *penyakit) FindID(id uint) (*domain.Penyakit, error) {
+func (p *penyakit) FindID(id uint) (*domain.Penyakit, error) {
 	var model domain.Penyakit
 	find := p.client.DB.Preload("Obat").Where("id = ?", id).Find(&model)
 
@@ -65,11 +65,10 @@ func(p *penyakit) FindID(id uint) (*domain.Penyakit, error) {
 		return nil, util.Errors(find.Error)
 	}
 
-
 	return &model, nil
 }
 
-func(p *penyakit) Delete(id uint) error {
+func (p *penyakit) Delete(id uint) error {
 	var model domain.Penyakit
 	find := p.client.DB.Where("id = ?", id).Find(&model)
 

@@ -91,7 +91,7 @@ func (u *user) Delete(id uint) error {
 	return nil
 }
 
-func(u *user) GetDoctor() (*[]domain.User, error) {
+func (u *user) GetDoctor() (*[]domain.User, error) {
 	var model []domain.User
 	err := u.client.DB.Preload("Role").Where("id = ?", 2).Find(&model)
 
@@ -102,7 +102,7 @@ func(u *user) GetDoctor() (*[]domain.User, error) {
 	return &model, nil
 }
 
-func(u *user) GetNurse() (*[]domain.User, error) {
+func (u *user) GetNurse() (*[]domain.User, error) {
 	var model []domain.User
 	err := u.client.DB.Preload("Role").Where("id = ?", 3).Find(&model)
 

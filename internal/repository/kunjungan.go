@@ -22,8 +22,7 @@ func NewKunjungan(client *config.Postgres) KunjunganInterface {
 	}
 }
 
-func(k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {
-
+func (k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {
 
 	err := k.client.DB.Create(&req).Error
 	if err != nil {
@@ -34,7 +33,6 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {
 	if err != nil {
 		return nil, util.Errors(err)
 	}
-
 
 	return &req, nil
 }
@@ -56,7 +54,7 @@ func (k *kunjungan) GotPrice(req domain.Kunjungan) (*[]domain.Obat, error) {
 
 		var ob domain.Obat
 		for _, o := range obat {
-			ob.QtyAvailable = o.QtyAvailable  - 1
+			ob.QtyAvailable = o.QtyAvailable - 1
 			ob.QtyReserved += 1
 			ob.QtyOn = o.QtyAvailable + o.QtyReserved
 
@@ -72,7 +70,7 @@ func (k *kunjungan) GotPrice(req domain.Kunjungan) (*[]domain.Obat, error) {
 	return &obat, nil
 }
 
-func(k *kunjungan) List(id uint) (*[]domain.Kunjungan, error) {
+func (k *kunjungan) List(id uint) (*[]domain.Kunjungan, error) {
 	var model []domain.Kunjungan
 	find := k.client.DB.Where("id = ?").Find(&model)
 	if find.RowsAffected == 0 {
@@ -87,7 +85,6 @@ func(k *kunjungan) List(id uint) (*[]domain.Kunjungan, error) {
 	if err != nil {
 		return nil, util.Errors(err)
 	}
-
 
 	return &model, nil
 }

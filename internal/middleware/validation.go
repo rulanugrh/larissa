@@ -34,7 +34,7 @@ func (v *Validation) Validate(data interface{}) error {
 func (v *Validation) Error(err error) error {
 	var msg string
 	for _, e := range err.(validator.ValidationErrors) {
-		switch e.Tag(){
+		switch e.Tag() {
 		case "required":
 			msg = fmt.Sprintf("%s is required", e.Field())
 		case "min":

@@ -18,18 +18,18 @@ type UserInterface interface {
 }
 
 type user struct {
-	urepo repository.UserInterface
+	urepo    repository.UserInterface
 	validate middleware.IValidation
 }
 
 func NewUser(urepo repository.UserInterface) UserInterface {
 	return &user{
-		urepo: urepo,
+		urepo:    urepo,
 		validate: middleware.NewValidation(),
 	}
 }
 
-func(u *user) Register(req domain.UserRegister) (*web.User, error) {
+func (u *user) Register(req domain.UserRegister) (*web.User, error) {
 	err := u.validate.Validate(req)
 	if err != nil {
 		return nil, u.validate.Error(err)
@@ -41,13 +41,13 @@ func(u *user) Register(req domain.UserRegister) (*web.User, error) {
 	}
 
 	created := domain.UserRegister{
-		FName: req.FName,
-		LName: req.LName,
-		TTL: req.TTL,
-		Age: req.Age,
-		Address: req.Address,
+		FName:    req.FName,
+		LName:    req.LName,
+		TTL:      req.TTL,
+		Age:      req.Age,
+		Address:  req.Address,
 		Password: string(hashPassword),
-		RoleID: req.RoleID,
+		RoleID:   req.RoleID,
 	}
 
 	data, err := u.urepo.Create(created)
@@ -56,20 +56,19 @@ func(u *user) Register(req domain.UserRegister) (*web.User, error) {
 	}
 
 	response := web.User{
-		ID: data.ID,
-		Email: data.Email,
-		FName: data.FName,
-		LName: data.LName,
-		Age: data.Age,
+		ID:      data.ID,
+		Email:   data.Email,
+		FName:   data.FName,
+		LName:   data.LName,
+		Age:     data.Age,
 		Address: data.Address,
-		TTL: data.TTL,
+		TTL:     data.TTL,
 	}
-
 
 	return &response, nil
 }
 
-func(u *user) Login(req domain.UserLogin) (*string, error) {
+func (u *user) Login(req domain.UserLogin) (*string, error) {
 	err := u.validate.Validate(req)
 	if err != nil {
 		return nil, u.validate.Error(err)
@@ -93,8 +92,7 @@ func(u *user) Login(req domain.UserLogin) (*string, error) {
 	return &token, nil
 }
 
-
-func(u *user) Update(id uint, req domain.User) error {
+func (u *user) Update(id uint, req domain.User) error {
 	err := u.urepo.Update(id, req)
 	if err != nil {
 		return util.Errors(err)
@@ -103,7 +101,7 @@ func(u *user) Update(id uint, req domain.User) error {
 	return nil
 }
 
-func(u *user) GotDoctor() (*[]web.User, error) {
+func (u *user) GotDoctor() (*[]web.User, error) {
 	data, err := u.urepo.GetDoctor()
 	if err != nil {
 		return nil, util.Errors(err)
@@ -112,11 +110,11 @@ func(u *user) GotDoctor() (*[]web.User, error) {
 	var response []web.User
 	for _, v := range *data {
 		result := web.User{
-			ID: v.ID,
-			Email: v.Email,
-			FName: v.FName,
-			LName: v.LName,
-			Age: v.Age,
+			ID:      v.ID,
+			Email:   v.Email,
+			FName:   v.FName,
+			LName:   v.LName,
+			Age:     v.Age,
 			Address: v.Address,
 		}
 
@@ -126,7 +124,7 @@ func(u *user) GotDoctor() (*[]web.User, error) {
 	return &response, nil
 }
 
-func(u *user) GotNurse() (*[]web.User, error) {
+func (u *user) GotNurse() (*[]web.User, error) {
 	data, err := u.urepo.GetNurse()
 	if err != nil {
 		return nil, util.Errors(err)
@@ -135,11 +133,11 @@ func(u *user) GotNurse() (*[]web.User, error) {
 	var response []web.User
 	for _, v := range *data {
 		result := web.User{
-			ID: v.ID,
-			Email: v.Email,
-			FName: v.FName,
-			LName: v.LName,
-			Age: v.Age,
+			ID:      v.ID,
+			Email:   v.Email,
+			FName:   v.FName,
+			LName:   v.LName,
+			Age:     v.Age,
 			Address: v.Address,
 		}
 

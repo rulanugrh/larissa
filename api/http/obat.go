@@ -19,17 +19,17 @@ type ObatInterface interface {
 
 type obat struct {
 	service service.ObatInterface
-	gauge *pkg.Data
+	gauge   *pkg.Data
 }
 
 func NewObat(service service.ObatInterface, gauge *pkg.Data) ObatInterface {
 	return &obat{
 		service: service,
-		gauge: gauge,
+		gauge:   gauge,
 	}
 }
 
-func(o *obat) FindID(w http.ResponseWriter, r *http.Request) {
+func (o *obat) FindID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/api/obat/find/"))
 	if err != nil {
 		w.WriteHeader(500)
@@ -54,7 +54,7 @@ func(o *obat) FindID(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(o *obat) FindAll(w http.ResponseWriter, r *http.Request) {
+func (o *obat) FindAll(w http.ResponseWriter, r *http.Request) {
 	data, err := o.service.FindAll()
 	if err != nil {
 		o.gauge.ObatHistory.With(prometheus.Labels{"code": "400", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())

@@ -28,7 +28,7 @@ func (m *MongoDB) NewMongo() {
 	)
 
 	client := options.Client().ApplyURI(dsn).SetServerAPIOptions(serverApi)
-	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
 	cli, err := mongo.Connect(ctx, client)

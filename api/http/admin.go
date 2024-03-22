@@ -26,17 +26,17 @@ type AdminInterface interface {
 
 type admin struct {
 	service service.AdminInterface
-	gauge *pkg.Data
+	gauge   *pkg.Data
 }
 
 func NewAdmin(service service.AdminInterface, gauge *pkg.Data) AdminInterface {
 	return &admin{
 		service: service,
-		gauge: gauge,
+		gauge:   gauge,
 	}
 }
 
-func(a *admin) Penyakit(w http.ResponseWriter, r *http.Request) {
+func (a *admin) Penyakit(w http.ResponseWriter, r *http.Request) {
 	var req domain.Penyakit
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -66,7 +66,7 @@ func(a *admin) Penyakit(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(a *admin) Obat(w http.ResponseWriter, r *http.Request) {
+func (a *admin) Obat(w http.ResponseWriter, r *http.Request) {
 	var req domain.Obat
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -96,7 +96,7 @@ func(a *admin) Obat(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(a *admin) UpdateObat(w http.ResponseWriter, r *http.Request) {
+func (a *admin) UpdateObat(w http.ResponseWriter, r *http.Request) {
 	var req domain.Obat
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -131,7 +131,7 @@ func(a *admin) UpdateObat(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(a *admin) DeleteObat(w http.ResponseWriter, r *http.Request) {
+func (a *admin) DeleteObat(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/api/admin/delete/obat/"))
 	if err != nil {
 		w.WriteHeader(500)
@@ -154,7 +154,7 @@ func(a *admin) DeleteObat(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(a *admin) DeletePenyakit(w http.ResponseWriter, r *http.Request) {
+func (a *admin) DeletePenyakit(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/api/admin/delete/penyakit/"))
 	if err != nil {
 		w.WriteHeader(500)
@@ -177,7 +177,7 @@ func(a *admin) DeletePenyakit(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(a *admin) Reported(w http.ResponseWriter, r *http.Request) {
+func (a *admin) Reported(w http.ResponseWriter, r *http.Request) {
 	data, err := a.service.Reported()
 	if err != nil {
 		a.gauge.KunjunganHistory.With(prometheus.Labels{"code": "400", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
@@ -196,7 +196,7 @@ func(a *admin) Reported(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(a *admin) ListAllUser(w http.ResponseWriter, r *http.Request) {
+func (a *admin) ListAllUser(w http.ResponseWriter, r *http.Request) {
 	data, err := a.service.ListAllUser()
 	if err != nil {
 		a.gauge.UserHistory.With(prometheus.Labels{"code": "400", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())

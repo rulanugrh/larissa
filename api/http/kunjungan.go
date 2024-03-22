@@ -20,17 +20,17 @@ type KunjunganInterface interface {
 
 type kunjungan struct {
 	service service.KunjunganInterface
-	gauge *pkg.Data
+	gauge   *pkg.Data
 }
 
 func NewKunjungan(service service.KunjunganInterface, gauge *pkg.Data) KunjunganInterface {
 	return &kunjungan{
 		service: service,
-		gauge: gauge,
+		gauge:   gauge,
 	}
 }
 
-func(k *kunjungan) Create(w http.ResponseWriter, r *http.Request) {
+func (k *kunjungan) Create(w http.ResponseWriter, r *http.Request) {
 	var req domain.Kunjungan
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -60,7 +60,7 @@ func(k *kunjungan) Create(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(k *kunjungan) Find(w http.ResponseWriter, r *http.Request) {
+func (k *kunjungan) Find(w http.ResponseWriter, r *http.Request) {
 	id, err := middleware.GetUserID(r)
 	if err != nil {
 		k.gauge.KunjunganHistory.With(prometheus.Labels{"code": "401", "method": "GET", "type": "getByID"}).Observe(time.Since(time.Now()).Seconds())

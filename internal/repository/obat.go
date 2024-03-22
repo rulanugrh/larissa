@@ -24,7 +24,7 @@ func NewObat(client *config.Postgres) ObatInterface {
 	}
 }
 
-func(o *obat) Create(req domain.Obat) (*domain.Obat, error) {
+func (o *obat) Create(req domain.Obat) (*domain.Obat, error) {
 	find := o.client.DB.Where("name = ?", req.Name).Find(&req)
 	if find.RowsAffected != 0 {
 		return nil, util.DataHasBeenUsed()
@@ -43,7 +43,7 @@ func(o *obat) Create(req domain.Obat) (*domain.Obat, error) {
 	return &req, nil
 }
 
-func(o *obat) FindID(id uint) (*domain.Obat, error) {
+func (o *obat) FindID(id uint) (*domain.Obat, error) {
 	var model domain.Obat
 	err := o.client.DB.Where("id = ?", id).Preload("Penyakit").Find(&model).Error
 
@@ -54,7 +54,7 @@ func(o *obat) FindID(id uint) (*domain.Obat, error) {
 	return &model, nil
 }
 
-func(o *obat) FindAll() (*[]domain.Obat, error) {
+func (o *obat) FindAll() (*[]domain.Obat, error) {
 	var finds []domain.Obat
 
 	err := o.client.DB.Preload("Penyakit").Find(&finds).Error
@@ -65,7 +65,7 @@ func(o *obat) FindAll() (*[]domain.Obat, error) {
 	return &finds, nil
 }
 
-func(o *obat) Update(id uint, req domain.Obat) (*domain.Obat, error) {
+func (o *obat) Update(id uint, req domain.Obat) (*domain.Obat, error) {
 	var model domain.Obat
 	find := o.client.DB.Where("id = ?", id).Find(&model)
 	if find.RowsAffected == 0 {
@@ -80,7 +80,7 @@ func(o *obat) Update(id uint, req domain.Obat) (*domain.Obat, error) {
 	return &model, nil
 }
 
-func(o *obat) Delete(id uint) error {
+func (o *obat) Delete(id uint) error {
 	var model domain.Obat
 	find := o.client.DB.Where("id  = ?", id).Find(&model)
 	if find.RowsAffected == 0 {

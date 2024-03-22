@@ -23,17 +23,17 @@ type UserInterface interface {
 
 type user struct {
 	service service.UserInterface
-	gauge *pkg.Data
+	gauge   *pkg.Data
 }
 
 func NewUser(service service.UserInterface, gauge *pkg.Data) UserInterface {
 	return &user{
 		service: service,
-		gauge: gauge,
+		gauge:   gauge,
 	}
 }
 
-func(u *user) Register(w http.ResponseWriter, r *http.Request) {
+func (u *user) Register(w http.ResponseWriter, r *http.Request) {
 	var req domain.UserRegister
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -64,7 +64,7 @@ func(u *user) Register(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(u *user) Login(w http.ResponseWriter, r *http.Request) {
+func (u *user) Login(w http.ResponseWriter, r *http.Request) {
 	var req domain.UserLogin
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -102,7 +102,7 @@ func(u *user) Login(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(u *user) Update(w http.ResponseWriter, r *http.Request) {
+func (u *user) Update(w http.ResponseWriter, r *http.Request) {
 	var req domain.User
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -134,7 +134,6 @@ func(u *user) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	u.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "PUT", "type": "update"}).Observe(time.Since(time.Now()).Seconds())
 	u.gauge.UserUpgrade.With(prometheus.Labels{"type": "update"}).Inc()
 
@@ -143,7 +142,7 @@ func(u *user) Update(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(u *user) GotDoctor(w http.ResponseWriter, r *http.Request) {
+func (u *user) GotDoctor(w http.ResponseWriter, r *http.Request) {
 	data, err := u.service.GotDoctor()
 	if err != nil {
 		u.gauge.UserHistory.With(prometheus.Labels{"code": "400", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
@@ -162,7 +161,7 @@ func(u *user) GotDoctor(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func(u *user) GotNurse(w http.ResponseWriter, r *http.Request) {
+func (u *user) GotNurse(w http.ResponseWriter, r *http.Request) {
 	data, err := u.service.GotNurse()
 	if err != nil {
 		u.gauge.UserHistory.With(prometheus.Labels{"code": "400", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
