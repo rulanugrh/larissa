@@ -106,6 +106,8 @@ func(k *kunjungan) Find(userID uint) (*[]web.Kunjungan, error) {
 					Description: o.Description,
 					Price: int(o.Price),
 					QtyAvailable: int(o.QtyAvailable),
+					QtyReserved: int(o.QtyReserved),
+					QtyOn: int(o.QtyOn),
 				}
 
 				obat = append(obat, ob)

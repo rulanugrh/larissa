@@ -34,6 +34,8 @@ func(o *obat) FindID(id uint) (*web.Obat, error)  {
 		Description: data.Description,
 		QtyAvailable: int(data.QtyAvailable),
 		Price: int(data.Price),
+		QtyReserved: int(data.QtyReserved),
+		QtyOn: int(data.QtyOn),
 	}
 
 	return &response, nil
@@ -54,6 +56,8 @@ func(o *obat) FindAll() (*[]web.Obat, error)  {
 			Description: v.Description,
 			QtyAvailable: int(v.QtyAvailable),
 			Price: int(v.Price),
+			QtyReserved: int(v.QtyReserved),
+			QtyOn: int(v.QtyOn),
 		}
 
 		response = append(response, result)
