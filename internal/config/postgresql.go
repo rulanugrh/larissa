@@ -58,6 +58,10 @@ func (p *Postgres) Seeder() error {
 			Descriptions: "this is role doctor",
 		},
 		domain.Role{
+			Name: "Nurse",
+			Descriptions: "this is role nurse",
+		},
+		domain.Role{
 			Name: "User",
 			Descriptions: "this is role for user",
 	})
