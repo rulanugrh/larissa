@@ -12,6 +12,8 @@ type Obat struct {
 	Name         string `json:"name"`
 	Description  string `json:"description"`
 	Price        int    `json:"price"`
-	QtyAvailable int    `json:"qty"`
+	QtyAvailable int    `json:"qty_available"`
+	QtyReserved  int    `json:"qty_reserved"`
+	QtyOn        int    `json:"qty_on"`
 	Composition  string `json:"composition"`
 }

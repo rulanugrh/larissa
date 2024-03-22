@@ -43,20 +43,27 @@ func(k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 		return nil, util.Errors(err)
 	}
 
+	obats, err := k.krepo.GotPrice(req)
+	if err != nil {
+		return nil, util.Errors(err)
+	}
+
 	var penyakit []web.Penyakit
 	for _, p := range data.Penyakit {
 		var obat []web.Obat
-		for _, o := range p.Obat {
-			ob := web.Obat {
+		for _, o := range *obats {
+			res := web.Obat{
 				ID: o.ID,
-				Name: o.Name,
+				Price: int(o.Price),
 				Composition: o.Composition,
 				Description: o.Description,
-				Price: int(o.Price),
+				Name: o.Name,
 				QtyAvailable: int(o.QtyAvailable),
+				QtyReserved: int(o.QtyReserved),
+				QtyOn: int(o.QtyOn),
 			}
 
-			obat = append(obat, ob)
+			obat = append(obat, res)
 		}
 
 		py := web.Penyakit{
