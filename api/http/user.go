@@ -17,6 +17,8 @@ type UserInterface interface {
 	Register(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 	Update(w http.ResponseWriter, r *http.Request)
+	GotDoctor(w http.ResponseWriter, r *http.Request)
+	GotNurse(w http.ResponseWriter, r *http.Request)
 }
 
 type user struct {
@@ -138,5 +140,43 @@ func(u *user) Update(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(200)
 	w.Write([]byte("success update user"))
+	return
+}
+
+func(u *user) GotDoctor(w http.ResponseWriter, r *http.Request) {
+	data, err := u.service.GotDoctor()
+	if err != nil {
+		u.gauge.UserHistory.With(prometheus.Labels{"code": "400", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
+
+		response := util.WriteJSON(util.BadRequest(err.Error()))
+		w.WriteHeader(400)
+		w.Write(response)
+		return
+	}
+
+	u.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
+
+	response := util.WriteJSON(util.Created("success get doctor", data))
+	w.WriteHeader(200)
+	w.Write(response)
+	return
+}
+
+func(u *user) GotNurse(w http.ResponseWriter, r *http.Request) {
+	data, err := u.service.GotNurse()
+	if err != nil {
+		u.gauge.UserHistory.With(prometheus.Labels{"code": "400", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
+
+		response := util.WriteJSON(util.BadRequest(err.Error()))
+		w.WriteHeader(400)
+		w.Write(response)
+		return
+	}
+
+	u.gauge.UserHistory.With(prometheus.Labels{"code": "200", "method": "GET", "type": "get"}).Observe(time.Since(time.Now()).Seconds())
+
+	response := util.WriteJSON(util.Created("success get nurse", data))
+	w.WriteHeader(200)
+	w.Write(response)
 	return
 }

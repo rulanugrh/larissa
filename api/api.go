@@ -31,6 +31,8 @@ func (api *API) UserRoute(r *mux.Router) {
 	app.HandleFunc("/register", api.user.Register).Methods("POST")
 	app.HandleFunc("/login", api.user.Login).Methods("POST")
 	app.HandleFunc("/update", api.user.Update).Methods("PUT")
+	app.HandleFunc("/doctor", api.user.GotDoctor).Methods("GET")
+	app.HandleFunc("/nurse", api.user.GotNurse).Methods("GET")
 }
 
 func (api *API) KunjunganRoute(r *mux.Router) {

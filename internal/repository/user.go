@@ -9,6 +9,8 @@ import (
 type UserInterface interface {
 	Create(req domain.UserRegister) (*domain.User, error)
 	Find(req domain.UserLogin) (*domain.User, error)
+	GetDoctor() (*[]domain.User, error)
+	GetNurse() (*[]domain.User, error)
 	Update(id uint, req domain.User) error
 	ListAll() (*[]domain.User, error)
 	Delete(id uint) error
@@ -87,4 +89,26 @@ func (u *user) Delete(id uint) error {
 	}
 
 	return nil
+}
+
+func(u *user) GetDoctor() (*[]domain.User, error) {
+	var model []domain.User
+	err := u.client.DB.Preload("Role").Where("id = ?", 2).Find(&model)
+
+	if err.RowsAffected == 0 {
+		return nil, util.NotFound()
+	}
+
+	return &model, nil
+}
+
+func(u *user) GetNurse() (*[]domain.User, error) {
+	var model []domain.User
+	err := u.client.DB.Preload("Role").Where("id = ?", 3).Find(&model)
+
+	if err.RowsAffected == 0 {
+		return nil, util.NotFound()
+	}
+
+	return &model, nil
 }

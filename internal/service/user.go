@@ -13,6 +13,8 @@ type UserInterface interface {
 	Register(req domain.UserRegister) (*web.User, error)
 	Login(req domain.UserLogin) (*string, error)
 	Update(id uint, req domain.User) error
+	GotDoctor() (*[]web.User, error)
+	GotNurse() (*[]web.User, error)
 }
 
 type user struct {
@@ -99,4 +101,50 @@ func(u *user) Update(id uint, req domain.User) error {
 	}
 
 	return nil
+}
+
+func(u *user) GotDoctor() (*[]web.User, error) {
+	data, err := u.urepo.GetDoctor()
+	if err != nil {
+		return nil, util.Errors(err)
+	}
+
+	var response []web.User
+	for _, v := range *data {
+		result := web.User{
+			ID: v.ID,
+			Email: v.Email,
+			FName: v.FName,
+			LName: v.LName,
+			Age: v.Age,
+			Address: v.Address,
+		}
+
+		response = append(response, result)
+	}
+
+	return &response, nil
+}
+
+func(u *user) GotNurse() (*[]web.User, error) {
+	data, err := u.urepo.GetNurse()
+	if err != nil {
+		return nil, util.Errors(err)
+	}
+
+	var response []web.User
+	for _, v := range *data {
+		result := web.User{
+			ID: v.ID,
+			Email: v.Email,
+			FName: v.FName,
+			LName: v.LName,
+			Age: v.Age,
+			Address: v.Address,
+		}
+
+		response = append(response, result)
+	}
+
+	return &response, nil
 }
