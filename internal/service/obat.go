@@ -4,6 +4,7 @@ import (
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
+	"github.com/rulanugrh/larissa/pkg"
 )
 
 type ObatInterface interface {
@@ -13,17 +14,20 @@ type ObatInterface interface {
 
 type obat struct {
 	orepo repository.ObatInterface
+	log   pkg.ILogrust
 }
 
-func NewObat(orepo repository.ObatInterface) ObatInterface {
+func NewObat(orepo repository.ObatInterface, log pkg.ILogrust) ObatInterface {
 	return &obat{
 		orepo: orepo,
+		log:   log,
 	}
 }
 
 func (o *obat) FindID(id uint) (*web.Obat, error) {
 	data, err := o.orepo.FindID(id)
 	if err != nil {
+		o.log.StartLogger("obat_service", "findID").Error(err.Error())
 		return nil, util.Errors(err)
 	}
 
@@ -38,12 +42,14 @@ func (o *obat) FindID(id uint) (*web.Obat, error) {
 		QtyOn:        int(data.QtyOn),
 	}
 
+	o.log.StartLogger("obat_service", "findID").Info("success get obat")
 	return &response, nil
 }
 
 func (o *obat) FindAll() (*[]web.Obat, error) {
 	data, err := o.orepo.FindAll()
 	if err != nil {
+		o.log.StartLogger("obat_service", "findAll").Error(err.Error())
 		return nil, util.Errors(err)
 	}
 
@@ -63,5 +69,6 @@ func (o *obat) FindAll() (*[]web.Obat, error) {
 		response = append(response, result)
 	}
 
+	o.log.StartLogger("obat_service", "findAll").Info("success get obat")
 	return &response, nil
 }

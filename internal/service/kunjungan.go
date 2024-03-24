@@ -6,6 +6,7 @@ import (
 	"github.com/rulanugrh/larissa/internal/middleware"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
+	"github.com/rulanugrh/larissa/pkg"
 )
 
 type KunjunganInterface interface {
@@ -17,34 +18,40 @@ type kunjungan struct {
 	krepo    repository.KunjunganInterface
 	reported repository.ReportedInterface
 	validate middleware.IValidation
+	log pkg.ILogrust
 }
 
-func NewKunjungan(krepo repository.KunjunganInterface, reported repository.ReportedInterface) KunjunganInterface {
+func NewKunjungan(krepo repository.KunjunganInterface, reported repository.ReportedInterface, log pkg.ILogrust) KunjunganInterface {
 	return &kunjungan{
 		krepo:    krepo,
 		reported: reported,
 		validate: middleware.NewValidation(),
+		log: log,
 	}
 }
 
 func (k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 	err := k.validate.Validate(req)
 	if err != nil {
+		k.log.StartLogger("kunjungan_service", "create").Error("cannot validation field")
 		return nil, k.validate.Error(err)
 	}
 
 	data, err := k.krepo.Create(req)
 	if err != nil {
+		k.log.StartLogger("kunjungan_service", "create").Error("cannot create into db")
 		return nil, util.Errors(err)
 	}
 
 	err = k.reported.Create(data)
 	if err != nil {
+		k.log.StartLogger("kunjungan_service", "create").Error("cannot create into reported")
 		return nil, util.Errors(err)
 	}
 
 	obats, err := k.krepo.GotPrice(req)
 	if err != nil {
+		k.log.StartLogger("kunjungan_service", "create").Error("cannot got price in db")
 		return nil, util.Errors(err)
 	}
 
@@ -84,12 +91,14 @@ func (k *kunjungan) Create(req domain.Kunjungan) (*web.Kunjungan, error) {
 		Penyakit: penyakit,
 	}
 
+	k.log.StartLogger("kunjungan_service", "create").Info("success create kunjungan")
 	return &response, nil
 }
 
 func (k *kunjungan) Find(userID uint) (*[]web.Kunjungan, error) {
 	data, err := k.krepo.List(userID)
 	if err != nil {
+		k.log.StartLogger("kunjungan_service", "findByUserID").Error("cannot get list by this user id")
 		return nil, util.Errors(err)
 	}
 
@@ -134,5 +143,6 @@ func (k *kunjungan) Find(userID uint) (*[]web.Kunjungan, error) {
 		response = append(response, result)
 	}
 
+	k.log.StartLogger("kunjungan_service", "findByUserID").Info("kunjungan found")
 	return &response, nil
 }

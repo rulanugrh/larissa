@@ -8,6 +8,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/joho/godotenv v1.5.1
 	github.com/prometheus/client_golang v1.19.0
+	github.com/sirupsen/logrus v1.9.3
 	go.mongodb.org/mongo-driver v1.14.0
 	golang.org/x/crypto v0.21.0
 	gorm.io/driver/postgres v1.5.7

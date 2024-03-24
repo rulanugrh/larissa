@@ -16,13 +16,13 @@ func WriteJSON(data any) []byte {
 
 func SetCookie(name string, value *string, w http.ResponseWriter) error {
 	cookie := http.Cookie{
-		Name: name,
-		Value: *value,
-		MaxAge: 900,
+		Name:     name,
+		Value:    *value,
+		MaxAge:   900,
 		HttpOnly: true,
-		Secure: true,
+		Secure:   true,
 		SameSite: http.SameSiteLaxMode,
-		Path: "/",
+		Path:     "/",
 	}
 
 	valid := cookie.Valid()

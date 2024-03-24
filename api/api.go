@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -75,6 +74,7 @@ func main() {
 	reg.MustRegister(collectors.NewGoCollector())
 	m := pkg.NewMetric(reg)
 	gauge := m.SetGauge()
+	log := pkg.NewLogger()
 
 	conf := config.GetConfig()
 	postgres := config.InitializePostgres(conf)
@@ -87,10 +87,10 @@ func main() {
 	penyakitRepository := repository.NewPenyakit(postgres)
 	reportedRepository := repository.NewReported(mongo.Conn, conf)
 
-	userService := service.NewUser(userRepository)
-	obatService := service.NewObat(obatRepository)
-	kunjunganServices := service.NewKunjungan(kunjunganRepository, reportedRepository)
-	penyakitService := service.NewPenyakit(penyakitRepository)
+	userService := service.NewUser(userRepository, log)
+	obatService := service.NewObat(obatRepository, log)
+	kunjunganServices := service.NewKunjungan(kunjunganRepository, reportedRepository, log)
+	penyakitService := service.NewPenyakit(penyakitRepository, log)
 	adminService := service.NewAdmin(obatRepository, penyakitRepository, reportedRepository, userRepository)
 
 	api := API{

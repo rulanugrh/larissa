@@ -4,6 +4,7 @@ import (
 	"github.com/rulanugrh/larissa/internal/entity/web"
 	"github.com/rulanugrh/larissa/internal/repository"
 	"github.com/rulanugrh/larissa/internal/util"
+	"github.com/rulanugrh/larissa/pkg"
 )
 
 type PenyakitInterface interface {
@@ -13,17 +14,20 @@ type PenyakitInterface interface {
 
 type penyakit struct {
 	repository repository.PenyakitInterface
+	log pkg.ILogrust
 }
 
-func NewPenyakit(repository repository.PenyakitInterface) PenyakitInterface {
+func NewPenyakit(repository repository.PenyakitInterface, log pkg.ILogrust) PenyakitInterface {
 	return &penyakit{
 		repository: repository,
+		log: log,
 	}
 }
 
 func (p *penyakit) FindID(id uint) (*web.Penyakit, error) {
 	data, err := p.repository.FindID(id)
 	if err != nil {
+		p.log.StartLogger("penyakit_service", "findID").Error(err.Error())
 		return nil, util.Errors(err)
 	}
 
@@ -48,12 +52,16 @@ func (p *penyakit) FindID(id uint) (*web.Penyakit, error) {
 		Obat:        obat,
 	}
 
+
+	p.log.StartLogger("penyakit_service", "findID").Info("success get by this ID")
 	return &response, nil
 }
 
 func (p *penyakit) FindAll() (*[]web.Penyakit, error) {
 	data, err := p.repository.ListAll()
 	if err != nil {
+
+		p.log.StartLogger("penyakit_service", "findAll").Error(err.Error())
 		return nil, util.Errors(err)
 	}
 
@@ -83,5 +91,6 @@ func (p *penyakit) FindAll() (*[]web.Penyakit, error) {
 		response = append(response, result)
 	}
 
+	p.log.StartLogger("penyakit_service", "findAll").Info("success get all")
 	return &response, nil
 }
