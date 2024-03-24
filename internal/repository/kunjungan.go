@@ -29,7 +29,7 @@ func (k *kunjungan) Create(req domain.Kunjungan) (*domain.Kunjungan, error) {
 		return nil, util.Errors(err)
 	}
 
-	err = k.client.DB.Preload("Penyakit").Preload("User").Find(&req).Error
+	err = k.client.DB.Preload("Penyakit").Preload("User").Preload("Category").Find(&req).Error
 	if err != nil {
 		return nil, util.Errors(err)
 	}

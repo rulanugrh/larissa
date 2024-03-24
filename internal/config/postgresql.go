@@ -39,7 +39,7 @@ func (p *Postgres) NewConnection() {
 }
 
 func (p *Postgres) Migration() {
-	err := p.DB.AutoMigrate(&domain.Role{}, &domain.User{}, &domain.Obat{}, &domain.Penyakit{}, &domain.Kunjungan{})
+	err := p.DB.AutoMigrate(&domain.Role{}, &domain.User{}, &domain.Obat{}, &domain.Penyakit{}, &domain.CategoryKunjungan{}, &domain.Kunjungan{})
 	if err != nil {
 		log.Printf("error migration because :%s", err.Error())
 	}

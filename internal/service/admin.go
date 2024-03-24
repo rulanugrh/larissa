@@ -113,6 +113,7 @@ func (a *admin) Reported() (*[]web.Reported, error) {
 			Pengunjung: v.Pengunjung,
 			Age:        v.Age,
 			Address:    v.Address,
+			Category:   v.Category,
 		}
 
 		response = append(response, result)

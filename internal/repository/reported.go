@@ -58,6 +58,7 @@ func (r *reported) Create(req *domain.Kunjungan) error {
 	reported.Pengunjung = req.User.FName + req.User.LName
 	reported.Address = req.User.Address
 	reported.Age = req.User.Age
+	reported.Category = req.Category.Name
 	primitive.NewDateTimeFromTime(reported.CreateAt)
 	primitive.NewDateTimeFromTime(reported.UpdateAt)
 
