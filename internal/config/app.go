@@ -32,6 +32,13 @@ type App struct {
 		Email    string
 		Password string
 	}
+
+	Loki struct {
+		Username string
+		Password string
+		Host string
+		Port string
+	}
 }
 
 var app *App
@@ -86,6 +93,9 @@ func initConfig() *App {
 	conf.App.Secret = os.Getenv("APP_SECRET")
 	conf.App.Port = os.Getenv("APP_PORT")
 	conf.App.Host = os.Getenv("APP_HOST")
+
+	conf.Loki.Username = os.Getenv("LOKI_USERNAME")
+	conf.Loki.Password = os.Getenv("LOKI_PASSWORD")
 
 	return &conf
 }

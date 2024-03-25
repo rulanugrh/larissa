@@ -74,9 +74,9 @@ func main() {
 	reg.MustRegister(collectors.NewGoCollector())
 	m := pkg.NewMetric(reg)
 	gauge := m.SetGauge()
-	log := pkg.NewLogger()
 
 	conf := config.GetConfig()
+	log := pkg.NewLogger(conf)
 	postgres := config.InitializePostgres(conf)
 	postgres.NewConnection()
 	mongo := config.InitializeMongo(conf)
