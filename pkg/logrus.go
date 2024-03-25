@@ -33,7 +33,7 @@ func NewLogger(conf *config.App) *Logger {
 		WithStaticLabels(lokirus.Labels{
 			"app": "larissa",
 			"env": "dev",
-		}).WithBasicAuth(conf.Loki.Username, conf.Loki.Password)
+		})
 
 	hook := lokirus.NewLokiHookWithOpts(
 		fmt.Sprintf("http://%s:%s", conf.Loki.Host, conf.Loki.Port),
