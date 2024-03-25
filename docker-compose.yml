@@ -44,6 +44,18 @@ services:
     depends_on:
       - app
 
+  loki:
+    image: grafana/loki:latest
+    container_name: loki-larissa
+    hostname: loki
+    ports:
+      - 3100:3100
+    volumes:
+      - ./infrastructure/loki.yml:/etc/loki/local-config.yml
+    command: -config.file=/etc/loki/local-config.yml
+    networks:
+      - connection
+
   grafana:
     image: grafana/grafana:9.3.0
     ports:
