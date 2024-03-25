@@ -12,9 +12,6 @@ $ git clone https://github.com/rualnugrh/larissa
 
 # go to folder
 $ cd larissa
-
-# and you download module before running program
-$ go mod download
 ```
 
 Next, you can run the program with the `build.sh` file
