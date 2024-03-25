@@ -91,7 +91,7 @@ func main() {
 	obatService := service.NewObat(obatRepository, log)
 	kunjunganServices := service.NewKunjungan(kunjunganRepository, reportedRepository, log)
 	penyakitService := service.NewPenyakit(penyakitRepository, log)
-	adminService := service.NewAdmin(obatRepository, penyakitRepository, reportedRepository, userRepository)
+	adminService := service.NewAdmin(obatRepository, penyakitRepository, reportedRepository, userRepository, log)
 
 	api := API{
 		obat:      handler.NewObat(obatService, gauge),
