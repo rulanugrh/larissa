@@ -96,6 +96,8 @@ func initConfig() *App {
 
 	conf.Loki.Username = os.Getenv("LOKI_USERNAME")
 	conf.Loki.Password = os.Getenv("LOKI_PASSWORD")
+	conf.Loki.Host = os.Getenv("LOKI_HOST")
+	conf.Loki.Port = os.Getenv("LOKI_PORT")
 
 	return &conf
 }
